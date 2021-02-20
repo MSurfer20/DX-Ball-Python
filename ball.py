@@ -20,7 +20,7 @@ class ball:
         if self.stuck:
             return  
         if math.floor(self.x+self.x_vel)>=rows:
-            board._balls.remove(self)
+            self.removeballs(board)
             return
         self.x+=self.x_vel
         self.y+=self.y_vel
@@ -34,6 +34,11 @@ class ball:
                 self.y=0
             else:
                 self.y=cols-1
+    
+    def removeballs(self, board):
+        board._balls.remove(self)
+        if len(board._balls) == 0:
+            board.liveslost()
         
     def detectbrickcollision(self, board):
         x_dir=int(math.copysign(1,self.x_vel))
@@ -42,23 +47,23 @@ class ball:
         curr_y=math.floor(self.y)
         if isinstance(board._board[int(curr_x+x_dir)][int(curr_y)], brick.brick) and board._board[int(curr_x+x_dir)][int(curr_y)].lvl>0:
             if self.fire:
-                a=board._board[int(curr_x+x_dir)][int(curr_y)].destroy()
+                a=board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board)
                 if a:
                     board._powerups.append(a)
             else:
                 self.x_vel=self.x_vel*-1
-                a=board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl()
+                a=board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board)
                 if a:
                     board._powerups.append(a)
 
         if isinstance(board._board[int(curr_x)][int(curr_y+y_dir)], brick.brick) and board._board[int(curr_x)][int(curr_y+y_dir)].lvl>0:
             if self.fire:
-                a=board._board[int(curr_x)][int(curr_y+y_dir)].destroy()
+                a=board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board)
                 if a:
                     board._powerups.append(a)
             else:
                 self.y_vel=self.y_vel*-1
-                a=board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl()
+                a=board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board)
                 if a:
                     board._powerups.append(a)
             

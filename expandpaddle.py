@@ -9,6 +9,6 @@ class expandpaddle(PowerUp):
         super().execute()
         board._paddle.increasesize()
     
-    def deactivate(self, paddle):
+    def deactivate(self, board):
         super().deactivate()
         board._paddle.decreasesize()

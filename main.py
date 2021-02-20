@@ -13,7 +13,6 @@ if __name__ == '__main__':
     current_board=board(rows, cols)
     current_board.createlevel1()
     while(True):
-        # print(current_board._board)
         c=input_to(getch)
         if c=='q':
             sys.exit(0)
@@ -25,7 +24,7 @@ if __name__ == '__main__':
         if c==' ':
             current_board.releaseballs()
         if c:
-            time.sleep(0.1)    
+            time.sleep(0.05)    
         current_board.detectcollisionballs()
         current_board.moveballs()
         current_board.droppows()
