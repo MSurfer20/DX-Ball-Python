@@ -22,18 +22,28 @@ class ball:
         if math.floor(self.x+self.x_vel)>=rows:
             self.removeballs(board)
             return
+
         self.x+=self.x_vel
         self.y+=self.y_vel
+
         if((self.x)<=0):
-            self.x_vel=self.x_vel*-1
-            if self.x<1:
-                self.x=0
+            self.topwallcollision()
+            
         if((self.y)<=0 or (self.y)>=cols-1):
-            self.y_vel=self.y_vel*-1
-            if self.y<1:
-                self.y=0
-            else:
-                self.y=cols-1
+            self.sidewallcollision()
+            
+    
+    def topwallcollision(self):
+        self.x_vel=self.x_vel*-1
+        if self.x<1:
+            self.x=0
+    
+    def sidewallcollision(self):
+        self.y_vel=self.y_vel*-1
+        if self.y<1:
+            self.y=0
+        else:
+            self.y=cols-1
     
     def removeballs(self, board):
         board._balls.remove(self)
@@ -67,18 +77,19 @@ class ball:
                 if a:
                     board._powerups.append(a)
             
-        if x_dir==1 and curr_y>=board._paddle.y and curr_y<=board._paddle.y+board._paddle.length and curr_x==rows-2:
+        
+    def detectpaddlecollision(self, paddle):
+        x_dir=int(math.copysign(1,self.x_vel))
+        y_dir=int(math.copysign(1,self.y_vel))
+        curr_x=math.floor(self.x)
+        curr_y=math.floor(self.y)
+        if x_dir==1 and curr_y>=paddle.y and curr_y<=paddle.y+paddle.length and curr_x==rows-2:
             self.x_vel=self.x_vel*-1
-            val=board._paddle.y+(board._paddle.length)/2-curr_y
+            val=paddle.y+(paddle.length)/2-curr_y
             self.y_vel=-val*0.5
-            if board._paddle.stick:
+            if paddle.stick:
                 self.stuck=True
 
-    def detectpaddlecollision(self, paddle):
-        pass
-    
-    def detectwallcollision(self):
-        pass
     
     def movestuckball(self, key):
         if key=='d':

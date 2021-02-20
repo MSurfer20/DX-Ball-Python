@@ -195,7 +195,8 @@ class board():
     
     def detectcollisionballs(self):
         for ball in self._balls:
-            a=ball.detectbrickcollision(self)
+            ball.detectbrickcollision(self)
+            ball.detectpaddlecollision(self._paddle)
     
     def releaseballs(self):
         for ball in self._balls:
