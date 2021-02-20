@@ -1,3 +1,3 @@
 import numpy as np
-rows=40
+rows=38
 cols=120

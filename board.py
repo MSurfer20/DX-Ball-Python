@@ -8,6 +8,8 @@ import random
 import global_stuff
 from colorama import Fore, Style, Style
 import sys
+import time
+import datetime
 
 
 class board():
@@ -19,8 +21,8 @@ class board():
         self._balls = [ball(rows-2, random.randint(self._paddle.y, self._paddle.y+self._paddle.length))]
         self._powerups =[]
         self.score=0
-        self.remaining_lives=2
-        self.time_played=0
+        self.remaining_lives=6
+        self.start_time=time.time()
     
     def getdim(self):
         return (self._rows, self._columns)
@@ -66,17 +68,29 @@ class board():
     
     def liveslost(self):
         self.remaining_lives-=1
-        self._powerups=[]
+        self.finish_powerups()
         if self.remaining_lives == 0:
             pass
         else:
             a=random.randint(self._paddle.y, self._paddle.y+self._paddle.length)
             self._balls=[ball(global_stuff.rows-2, a)]
 
-                    
+    def finish_powerups(self):
+        for powu in self._powerups:
+            if powu.remaining_time>0:
+                powu.deactivate(self)
+        self._powerups=[]
 
     def printboard(self):
         print_str=""
+        print_str+="LIVES: "+str(self.remaining_lives)+"\t"+"TIME: "+str(datetime.timedelta(seconds=int(time.time()-self.start_time)))+"\t"+"SCORE: "+str(self.score)
+        for powu in self._powerups:
+            if powu.remaining_time>0:
+                print_str+=powu.icon
+        curlen=len(print_str)
+        for y in range(global_stuff.cols+1-curlen):
+            print_str+=" "
+        print_str+="\n"
         for y in range(global_stuff.cols+1):
             print_str+="\u23AF"
         print_str+="\n"
@@ -160,10 +174,7 @@ class board():
         
 
     def moveboardpaddle(self, key):
-        self._paddle.movepaddle(key)
-        for ball in self._balls:
-            if ball.stuck:
-                ball.movestuckball(key)
+        self._paddle.movepaddle(key, self._balls)
     
     def droppows(self):
         for pow_up in self._powerups:
@@ -176,7 +187,7 @@ class board():
             pow_up.reducetime()
             if pow_up.remaining_time==0:
                 pow_up.deactivate(self)
-                self._powerups=self._powerups[:index]+self._powerups[index+1:]
+                self._powerups.remove(pow_up)
         
     def moveballs(self):
         for index, ball in enumerate(self._balls):

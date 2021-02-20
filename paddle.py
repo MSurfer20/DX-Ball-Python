@@ -1,3 +1,4 @@
+import global_stuff 
 class paddle:
     def __init__(self, x, y):
         self.x=x
@@ -6,11 +7,19 @@ class paddle:
         self.actual_length=20
         self.stick=False
     
-    def movepaddle(self, key):
+    def movepaddle(self, key, balls):
         if key=='d':
-            self.y+=3
+            max_d=min(3, global_stuff.cols-self.length-self.y+1)
+            self.y+=max_d
+            for ball in balls:
+                if ball.stuck:
+                    ball.y+=max_d
         elif key=='a':
-            self.y-=3
+            max_d=self.y-max(0, self.y-3)
+            self.y-=max_d
+            for ball in balls:
+                if ball.stuck:
+                    ball.y-=max_d
     
     def increasesize(self):
         self.actual_length+=6

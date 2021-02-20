@@ -5,7 +5,7 @@ from ballmultiplier import ballmultiplier
 from fastball import fastball
 from paddlegrab import paddlegrab
 from thruball import thruball
-# from global_stuff import power_array
+import global_stuff
 import random
 
 class brick:
@@ -20,6 +20,7 @@ class brick:
             for y in range(0,6):
                 for x in range(0,2):
                     board._board[self.x+x][self.y+y]=None
+            self.increasescore(board)
             return self.generate_powerup(self.x,self.y)
         return None
     
@@ -28,13 +29,17 @@ class brick:
         for y in range(0,6):
             for x in range(0,2):
                 board._board[self.x+x][self.y+y]=None
+        self.increasescore(board)
         return self.generate_powerup(self.x,self.y)
+    
+    def increasescore(self, board):
+        pass
         
     
     def generate_powerup(self, x,y):
         num=random.randint(0,1)
-        if num:
-            return None
+        # if not num:
+        #     return None
         num=random.randint(0,5)
         if num==0:
             return expandpaddle(x,y)
@@ -56,42 +61,61 @@ class brick1(brick):
         super().__init__(x, y)
         self.lvl=1
 
+    def increasescore(self, board):
+        board.score+=5
+    
 class brick2(brick):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.lvl=2
+
+    def increasescore(self, board):
+        board.score+=10
 
 class brick3(brick):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.lvl=3
 
+    def increasescore(self, board):
+        board.score+=15
+
 class brick4(brick):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.lvl=4
 
+    def increasescore(self, board):
+        board.score+=20
+
 class brickfixed(brick):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.lvl=10
+
     def reducelvl(self, board):
         return None
+
+    def increasescore(self, board):
+        pass
 
 class explodingbrick(brick):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.lvl=20
+
     def reducelvl(self, board):
         return self.destroy(board)
+
     def destroy(self, board):
         if not board._board[self.x][self.y]:
             return
         self.lvl=0
+        self.increasescore(board)
         board._board[self.x][self.y]=None
-        if board._board[self.x+2][self.y+6]:
+        if self.y+6<global_stuff.cols and board._board[self.x+2][self.y+6]:
             board._board[self.x+2][self.y+6].destroy(board)
-        if board._board[self.x][self.y+6]:
+        if self.y+6>global_stuff.cols and board._board[self.x][self.y+6]:
             board._board[self.x][self.y+6].destroy(board)
         for k in range(0,7):
             if board._board[self.x+2][self.y+k]:
@@ -104,3 +128,6 @@ class explodingbrick(brick):
             if board._board[self.x-1][self.y+k]:
                 board._board[self.x-1][self.y+k].destroy(board)
         return self.generate_powerup(self.x,self.y)
+    
+    def increasescore(self, board):
+        board.score+=2.5
