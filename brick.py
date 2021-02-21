@@ -21,7 +21,7 @@ class brick:
                 for x in range(0,2):
                     board._board[self.x+x][self.y+y]=None
             self.increasescore(board)
-            return self.generate_powerup(self.x,self.y)
+            board.add_powerup(self.generate_powerup(self.x,self.y))
         return None
     
     def destroy(self, board):
@@ -30,7 +30,7 @@ class brick:
             for x in range(0,2):
                 board._board[self.x+x][self.y+y]=None
         self.increasescore(board)
-        return self.generate_powerup(self.x,self.y)
+        board.add_powerup(self.generate_powerup(self.x,self.y))
     
     def increasescore(self, board):
         pass
@@ -124,7 +124,7 @@ class explodingbrick(brick):
         for k in range(-1,7):
             if board._board[self.x-1][self.y+k]:
                 board._board[self.x-1][self.y+k].destroy(board)
-        return self.generate_powerup(self.x,self.y)
+        board.add_powerup(self.generate_powerup(self.x,self.y))
     
     def increasescore(self, board):
         board.score+=2.5

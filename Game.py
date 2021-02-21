@@ -17,7 +17,7 @@ class Game:
     
     def rungame(self):
         self.current_board.createlevel1()
-        while(self.current_board.remaining_lives>0):
+        while(self.game_on==1):
             self.current_board.printboard()
             c=input_to(getch)
             if c=='q':
@@ -37,8 +37,13 @@ class Game:
             self.current_board.reducepows()
             time.sleep(0.02)
         system('clear')
-        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
-        print("\t\t\tSCORE: ",self.current_board.score)
-        print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))
-        print("PRESS ENTER TO PLAY AGAIN")
-        self.game_on=False
+        if self.game_on==-1:
+            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
+            print("\t\t\tSCORE: ",self.current_board.score)
+            print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))
+            print("PRESS ENTER TO PLAY AGAIN")
+        else:
+            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tYOU WONNN!!!")
+            print("\t\t\tSCORE: ",self.current_board.score)
+            print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))
+            print("PRESS ENTER TO PLAY AGAIN")

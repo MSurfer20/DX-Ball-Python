@@ -23,6 +23,7 @@ class board():
         self.score=0
         self.remaining_lives=10
         self.start_time=time.time()
+        self.gameon=1
     
     def getdim(self):
         return (self._rows, self._columns)
@@ -83,6 +84,7 @@ class board():
         self.finish_powerups()
         if self.remaining_lives == 0:
             system('clear')
+            self.gameon=-1
             print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
 
         else:
@@ -218,3 +220,14 @@ class board():
         if isinstance(self._board[x][y], brick.brick) and self._board[x][y].lvl>0:
             return True
         return False
+    
+    def balls_remaining(self):
+        return len(self._balls)
+    
+    def add_powerup(self, powu):
+        self._powerups.append(powu)
+    
+    def increase_score(self, val):
+        self.score+=val
+        if self.score>=1310:
+            self.gameon=0

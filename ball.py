@@ -53,7 +53,7 @@ class ball:
     
     def removeballs(self, board):
         board._balls.remove(self)
-        if len(board._balls) == 0:
+        if board.balls_remaining()==0:
             board.liveslost()
         
     def detectbrickcollision(self, board):
@@ -63,25 +63,17 @@ class ball:
         curr_y=math.floor(self.y)
         if board.check_bricks(int(curr_x), int(curr_y+y_dir)):
             if self.fire:
-                a=board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board)
-                if a:
-                    board._powerups.append(a)
+                board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board)
             else:
                 self.reflect_y_velocity()
-                a=board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board)
-                if a:
-                    board._powerups.append(a)
+                board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board)
         if board.check_bricks(int(curr_x+x_dir), int(curr_y)):
             if self.fire:
-                a=board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board)
-                if a:
-                    board._powerups.append(a)
+                board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board)
             else:
                 if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
                     self.x_vel=self.x_vel*-1
-                    a=board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board)
-                    if a:
-                        board._powerups.append(a)
+                    board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board)
     
     def reflect_x_velocity(self):
         self.x_vel=self.x_vel*-1
