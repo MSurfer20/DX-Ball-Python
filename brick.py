@@ -20,14 +20,18 @@ class brick(entity):
             for y in range(0,6):
                 board._board[self.x][self.y+y]=None
             self.increasescore(board)
-            board.add_powerup(self.generate_powerup(self.x,self.y))
+            a=self.generate_powerup(self.x,self.y)
+            if a:
+                board.add_powerup(a)
     
     def destroy(self, board):
         self.lvl=0
         for y in range(0,6):
             board._board[self.x][self.y+y]=None
         self.increasescore(board)
-        board.add_powerup(self.generate_powerup(self.x,self.y))
+        a=self.generate_powerup(self.x,self.y)
+        if a:
+            board.add_powerup()
     
     def increasescore(self, board): #overloaded
         pass
@@ -129,7 +133,9 @@ class explodingbrick(brick):
         for k in range(-1,7):
             if board._board[self.x-1][self.y+k]:
                 board._board[self.x-1][self.y+k].destroy(board)
-        board.add_powerup(self.generate_powerup(self.x,self.y))
+        a=self.generate_powerup(self.x,self.y)
+        if a:
+            board.add_powerup(a)
     
     def increasescore(self, board):
         board.increase_score(2.5)
