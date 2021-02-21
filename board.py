@@ -102,9 +102,8 @@ class board():
 
     def finish_powerups(self):
         for powu in self._powerups:
-            if powu.remaining_time>0:
+            if powu.remaining_time>=0:
                 powu.deactivate(self)
-                self._powerups.remove(powu)
         self._powerups=[]
 
     def printboard(self):
@@ -206,16 +205,11 @@ class board():
             pow_up.droppowerup()
             if pow_up.x==self._paddle.x-1 and pow_up.y>=self._paddle.y and pow_up.y<=self._paddle.y+self._paddle.length:
                 pow_up.execute(self)
-            elif pow_up.x>=global_stuff.rows:
-                self._powerups.remove(pow_up)
-            elif pow_up.x==-1 and pow_up.y==-1 and pow_up.remaining_time<=0:
-                self._powerups.remove(pow_up)
     
     def reducepows(self):
         for index, pow_up in enumerate(self._powerups):
             pow_up.reducetime()
             if pow_up.remaining_time==0:
-                self._powerups.remove(pow_up)
                 pow_up.deactivate(self)
         
     def moveballs(self):

@@ -5,7 +5,7 @@ from colorama import Fore, Style
 from entity import entity
 
 class ball(entity):
-    def __init__(self, x, y, x_vel=-1, y_vel=1, stuck=True, fire=False):
+    def __init__(self, x, y, x_vel=-1, y_vel=1, stuck=True, fire=False, fast_ball=1):
         super().__init__(x,y)
         self.x_vel=x_vel
         self.y_vel=y_vel
@@ -15,6 +15,7 @@ class ball(entity):
             self.icon=Fore.RED+"\u2B24"+Style.RESET_ALL
         else:
             self.icon="\u2B24"
+        self.fast_ball=fast_ball
 
     def moveball(self, board):
         
@@ -32,7 +33,7 @@ class ball(entity):
     
     def update_ball_position(self):
         self.x+=self.x_vel
-        self.y+=self.y_vel
+        self.y+=self.y_vel*self.fast_ball
             
     def ballfell(self):
         if math.floor(self.x+self.x_vel)>=rows:
@@ -114,4 +115,7 @@ class ball(entity):
         return self.stuck
 
     def increase_ball_velocity(self):
-        self.y_vel=self.y_vel+math.copysign(1,self.y_vel)
+        self.fast_ball=2
+    
+    def decrease_ball_velocity(self):
+        self.fast_ball=1
