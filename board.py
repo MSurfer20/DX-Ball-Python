@@ -18,33 +18,32 @@ class board():
         self._columns=columns
         self._board = np.empty(shape=(rows+1, columns+1), dtype=np.object)
         self._paddle = paddle(rows-1,columns/2)
-        self._balls = [ball(rows-2, random.randint(self._paddle.y, self._paddle.y+self._paddle.length))]
+        self._balls = [ball(rows-2, random.randint(int(self._paddle.y), int(self._paddle.y+self._paddle.length)))]
         self._powerups =[]
         self.score=0
-        self.remaining_lives=6
+        self.remaining_lives=10
         self.start_time=time.time()
     
     def getdim(self):
         return (self._rows, self._columns)
     
-    def get_random_brick(self, x, y):
-        random_number=random.randint(0,10)
-        if random_number==0:
+    def get_brick(self, x, y, typ):
+        if typ==0:
             return brick.brick1(x,y)
-        elif random_number==1:
+        elif typ==1:
             return  brick.brick2(x,y)
-        elif random_number==2:
+        elif typ==2:
             return brick.brick3(x,y)
-        elif random_number==3:
+        elif typ==3:
             return brick.brick4(x,y)
-        elif random_number==4:
+        elif typ==4:
             return brick.brickfixed(x,y)
-        elif random_number==5:
+        elif typ==5:
             return brick.explodingbrick(x,y)
         else:
             return None
     
-    def createlevel1(self):
+    def createlevel2(self):
         for x in range(6, 22, 2):
             y=1
             while y<116:
@@ -66,11 +65,26 @@ class board():
     #     for k in range(0,2):
     #         self._board[20+k][45]=self._board[20+k][46]=self._board[20+k][47]=self._board[20+k][48]=ob
     
+    def createlevel1(self):
+        # arr=[[0,0,5], [2,6,5], [4, 12, 5], [6,18,5],]
+        arr=[[16, 6, 1], [16, 18, 2], [16, 24, 3], [16, 30, 4], [16, 42, 3], [16, 48, 4], [16, 54, 1], [16, 60, 4], [16, 66, 1], [16, 72, 2], [16, 78, 3], [16, 84, 4], [16, 90, 0], [16, 96, 1], [16, 102, 2], [16, 108, 3], [16, 114, 4]]
+        arr+=[ [2, 18, 3], [2, 24, 2], [2, 30, 4], [2, 42, 4], [2, 48, 1], [2, 54, 0], [2, 60, 1], [2, 66, 2], [2, 72, 4], [2, 78, 1], [2, 84, 0], [2, 90, 4], [2, 96, 3], [2, 102, 4], [2, 108, 2], [2, 114, 1]]
+        arr+=[[2,30,5],[2,36,5],[2,42,5],[4,36,5],[2,42,5],[2,48,5]]
+        arr+=[[4, 6, 3], [4, 18, 4], [4, 24, 2], [4, 30, 3], [4, 42, 2], [4, 48, 0], [4, 54, 4], [4, 60, 4], [4, 66, 2], [4, 72, 1], [4, 78, 2], [4, 84, 4], [4, 90, 2], [4, 96, 4], [4, 102, 3], [4, 108, 4], [4, 114, 1], [6, 6, 4], [6, 24, 0], [6, 30, 1], [6, 42, 1], [6, 48, 4], [6, 54, 3], [6, 60, 0], [6, 66, 1], [6, 72, 2], [6, 78, 2], [6, 84, 4], [6, 90, 4], [6, 96, 0], [6, 102, 1], [6, 108, 0], [6, 114, 2], [8, 6, 0], [8, 18, 3], [8, 24, 0], [8, 30, 0], [8, 42, 0], [8, 48, 4], [8, 54, 1], [8, 60, 1], [8, 66, 4], [8, 72, 2], [8, 78, 1], [8, 84, 4], [8, 90, 1], [8, 96, 2], [8, 102, 0], [8, 108, 4], [8, 114, 4], [10, 6, 1], [10, 18, 2], [10, 24, 4], [10, 30, 4], [10, 42, 4], [10, 48, 2], [10, 54, 0], [10, 60, 3], [10, 66, 0], [10, 72, 2], [10, 78, 2], [10, 84, 3], [10, 90, 0], [10, 96, 0], [10, 102, 3], [10, 108, 0], [10, 114, 3], [12, 6, 2], [12, 18, 3], [12, 24, 3], [12, 30, 2], [12, 42, 0], [12, 48, 0], [12, 54, 0], [12, 60, 2], [12, 66, 4], [12, 72, 4], [12, 78, 1], [12, 84, 1], [12, 90, 0], [12, 96, 2], [12, 102, 1], [12, 108, 2], [12, 114, 1], [14, 6, 2], [14, 18, 1], [14, 24, 3], [14, 30, 1], [14, 42, 3], [14, 48, 3], [14, 54, 2], [14, 60, 3], [14, 66, 2], [14, 72, 4], [14, 78, 3], [14, 84, 4], [14, 90, 0], [14, 96, 3], [14, 102, 1], [14, 108, 3], [14, 114, 3]]
+        arr+=[[2, 6, 5], [4, 12, 5], [6, 18, 5], [8, 24, 5], [10, 30, 5], [12, 36, 5], [14, 36, 5]]
+        for typ in arr:
+            ob=self.get_brick(typ[0],typ[1],typ[2])
+            for a in range(0,6):
+                for b in range(0,2):
+                    self._board[typ[0]+b][typ[1]+a]=ob
+
     def liveslost(self):
         self.remaining_lives-=1
         self.finish_powerups()
         if self.remaining_lives == 0:
-            pass
+            system('clear')
+            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
+
         else:
             a=random.randint(self._paddle.y, self._paddle.y+self._paddle.length)
             self._balls=[ball(global_stuff.rows-2, a)]
@@ -97,8 +111,6 @@ class board():
         for x in range(global_stuff.rows+1):
             print_str+="\u23B9"
             y=0
-            # for y in range(len(self._board[x])):
-                # print(self._board[x][y])
             while y<len(self._board[x]):
                 if(isinstance(self._board[x][y], brick.brick)) and self._board[x][y].lvl>0:
                     # print(self._board[x][y].lvl, end="")
@@ -146,6 +158,7 @@ class board():
                         if math.floor(ball.x)==x and math.floor(ball.y)==y:
                             print_str+=ball.icon
                             flag1=1
+                            break
                     if flag1:
                         y+=1
                         continue
@@ -157,11 +170,10 @@ class board():
                             flag=1
                             break
                     if flag:
-                        y+=1
+                        y+=2
                         continue
-                    if not flag: 
-                        print_str+=" "
-                y+=1
+                    print_str+=" "
+                    y+=1
                 
                 
                         # print(" ", end="")
@@ -201,3 +213,8 @@ class board():
     def releaseballs(self):
         for ball in self._balls:
             ball.releaseball()
+
+    def check_bricks(self, x, y):
+        if isinstance(self._board[x][y], brick.brick) and self._board[x][y].lvl>0:
+            return True
+        return False

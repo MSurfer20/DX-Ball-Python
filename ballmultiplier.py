@@ -3,7 +3,7 @@ from ball import ball
 
 class ballmultiplier(PowerUp):
     def __init__(self, x, y):
-        icon='\u00D7'
+        icon='❌'
         super().__init__(x, y, icon)
     
     def execute(self, board):

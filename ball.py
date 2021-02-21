@@ -17,29 +17,35 @@ class ball:
             self.icon="\u2B24"
 
     def moveball(self, board):
+        
         if self.stuck:
             return  
-        if math.floor(self.x+self.x_vel)>=rows:
+        
+        if self.ballfell():
             self.removeballs(board)
             return
-
-        self.x+=self.x_vel
-        self.y+=self.y_vel
-
+        self.update_ball_position()
         if((self.x)<=0):
             self.topwallcollision()
-            
         if((self.y)<=0 or (self.y)>=cols-1):
             self.sidewallcollision()
-            
     
+    def update_ball_position(self):
+        self.x+=self.x_vel
+        self.y+=self.y_vel
+            
+    def ballfell(self):
+        if math.floor(self.x+self.x_vel)>=rows:
+            return True
+        return False
+
     def topwallcollision(self):
-        self.x_vel=self.x_vel*-1
+        self.reflect_x_velocity()
         if self.x<1:
             self.x=0
     
     def sidewallcollision(self):
-        self.y_vel=self.y_vel*-1
+        self.reflect_y_velocity()
         if self.y<1:
             self.y=0
         else:
@@ -55,27 +61,33 @@ class ball:
         y_dir=int(math.copysign(1,self.y_vel))
         curr_x=math.floor(self.x)
         curr_y=math.floor(self.y)
-        if isinstance(board._board[int(curr_x+x_dir)][int(curr_y)], brick.brick) and board._board[int(curr_x+x_dir)][int(curr_y)].lvl>0:
-            if self.fire:
-                a=board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board)
-                if a:
-                    board._powerups.append(a)
-            else:
-                self.x_vel=self.x_vel*-1
-                a=board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board)
-                if a:
-                    board._powerups.append(a)
-
-        if isinstance(board._board[int(curr_x)][int(curr_y+y_dir)], brick.brick) and board._board[int(curr_x)][int(curr_y+y_dir)].lvl>0:
+        if board.check_bricks(int(curr_x), int(curr_y+y_dir)):
             if self.fire:
                 a=board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board)
                 if a:
                     board._powerups.append(a)
             else:
-                self.y_vel=self.y_vel*-1
+                self.reflect_y_velocity()
                 a=board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board)
                 if a:
                     board._powerups.append(a)
+        if board.check_bricks(int(curr_x+x_dir), int(curr_y)):
+            if self.fire:
+                a=board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board)
+                if a:
+                    board._powerups.append(a)
+            else:
+                if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
+                    self.x_vel=self.x_vel*-1
+                    a=board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board)
+                    if a:
+                        board._powerups.append(a)
+    
+    def reflect_x_velocity(self):
+        self.x_vel=self.x_vel*-1
+    
+    def reflect_y_velocity(self):
+        self.y_vel=self.y_vel*-1
             
         
     def detectpaddlecollision(self, paddle):
@@ -84,7 +96,7 @@ class ball:
         curr_x=math.floor(self.x)
         curr_y=math.floor(self.y)
         if x_dir==1 and curr_y>=paddle.y and curr_y<=paddle.y+paddle.length and curr_x==rows-2:
-            self.x_vel=self.x_vel*-1
+            self.reflect_x_velocity()
             val=paddle.y+(paddle.length)/2-curr_y
             self.y_vel=-val*0.5
             if paddle.stick:
@@ -98,7 +110,7 @@ class ball:
             self.y-=3
     
     def releaseball(self):
-            self.stuck=False 
+        self.stuck=False 
     
     def setfire(self):
         self.fire=True

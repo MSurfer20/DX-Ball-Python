@@ -37,9 +37,6 @@ class brick:
         
     
     def generate_powerup(self, x,y):
-        num=random.randint(0,1)
-        # if not num:
-        #     return None
         num=random.randint(0,5)
         if num==0:
             return expandpaddle(x,y)
@@ -48,7 +45,7 @@ class brick:
         elif num==2:
             return ballmultiplier(x,y)
         elif num==3:
-            fastball(x,y)
+            return fastball(x,y)
         elif num==4:
             return paddlegrab(x,y)
         elif num==5:
@@ -115,16 +112,16 @@ class explodingbrick(brick):
         board._board[self.x][self.y]=None
         if self.y+6<global_stuff.cols and board._board[self.x+2][self.y+6]:
             board._board[self.x+2][self.y+6].destroy(board)
-        if self.y+6>global_stuff.cols and board._board[self.x][self.y+6]:
+        if self.y+6<global_stuff.cols and board._board[self.x][self.y+6]:
             board._board[self.x][self.y+6].destroy(board)
-        for k in range(0,7):
+        for k in range(-1,7):
             if board._board[self.x+2][self.y+k]:
                 board._board[self.x+2][self.y+k].destroy(board)
         if board._board[self.x-1][self.y-1]:
             board._board[self.x-1][self.y-1].destroy(board)
         if board._board[self.x][self.y-1]:
             board._board[self.x][self.y-1].destroy(board)
-        for k in range(0,7):
+        for k in range(-1,7):
             if board._board[self.x-1][self.y+k]:
                 board._board[self.x-1][self.y+k].destroy(board)
         return self.generate_powerup(self.x,self.y)
