@@ -12,21 +12,16 @@ getch=Get()
 
 class Game:
     def __init__(self):
-        self.game_on=True
         self.current_board=board(rows, cols)
     
     def rungame(self):
         self.current_board.createlevel1()
-        while(self.game_on==1):
+        while(self.current_board.game_on==1):
             c=input_to(getch)
             if c=='q':
                 sys.exit(0)
             if c=='a' or c=='d':
                 self.current_board.moveboardpaddle(c)
-            if c=='p':
-                for ball in self.current_board._balls:
-                    print(ball.x_vel, ball.y_vel)
-                input()
             if c==' ':
                 self.current_board.releaseballs()
             if c:
@@ -38,7 +33,7 @@ class Game:
             self.current_board.printboard()
             time.sleep(0.02)
         system('clear')
-        if self.game_on==-1:
+        if self.current_board.game_on==-1:
             print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
             print("\t\t\tSCORE: ",self.current_board.score)
             print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))

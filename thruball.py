@@ -7,10 +7,18 @@ class thruball(PowerUp):
         super().__init__(x, y, icon)
     
     def execute(self, board):
-        super().execute()
-        for ball in board._balls:
-            ball.setfire()
-
+        self.x=-1
+        self.y=-1
+        check_flag=0
+        for pow_up in board._powerups:
+            if isinstance(pow_up, thruball) and pow_up.remaining_time>0:
+                pow_up.remaining_time=120
+                check_flag=1
+        if check_flag==0:
+            super().execute()
+            for ball in board._balls:
+                ball.setfire()
+    
     def deactivate(self, board):
         for ball in board._balls:
             ball.stopfire()

@@ -23,7 +23,7 @@ class board():
         self.score=0
         self.remaining_lives=10
         self.start_time=time.time()
-        self.gameon=1
+        self.game_on=1
     
     def getdim(self):
         return (self._rows, self._columns)
@@ -94,7 +94,7 @@ class board():
         self.finish_powerups()
         if self.remaining_lives == 0:
             system('clear')
-            self.gameon=-1
+            self.game_on=-1
 
         else:
             a=random.randint(self._paddle.y, self._paddle.y+self._paddle.length)
@@ -103,8 +103,8 @@ class board():
     def finish_powerups(self):
         for powu in self._powerups:
             if powu.remaining_time>0:
-                self._powerups.remove(powu)
                 powu.deactivate(self)
+                self._powerups.remove(powu)
         self._powerups=[]
 
     def printboard(self):
@@ -206,6 +206,10 @@ class board():
             pow_up.droppowerup()
             if pow_up.x==self._paddle.x-1 and pow_up.y>=self._paddle.y and pow_up.y<=self._paddle.y+self._paddle.length:
                 pow_up.execute(self)
+            elif pow_up.x>=global_stuff.rows:
+                self._powerups.remove(pow_up)
+            elif pow_up.x==-1 and pow_up.y==-1 and pow_up.remaining_time<=0:
+                self._powerups.remove(pow_up)
     
     def reducepows(self):
         for index, pow_up in enumerate(self._powerups):
@@ -240,5 +244,5 @@ class board():
     
     def increase_score(self, val):
         self.score+=val
-        if self.score>=862.5:
-            self.gameon=0
+        if self.score>=865:
+            self.game_on=0

@@ -7,8 +7,17 @@ class paddlegrab(PowerUp):
         super().__init__(x, y, icon)
     
     def execute(self, board):
-        super().execute()
-        board._paddle.stick=True
+        self.x=-1
+        self.y=-1
+        check_flag=0
+        for pow_up in board._powerups:
+            if isinstance(pow_up, paddlegrab) and pow_up.remaining_time>0:
+                pow_up.remaining_time=120
+                check_flag=1
+        if check_flag==0:
+            super().execute()
+            board._paddle.stick=True
+            
 
     def deactivate(self, board):
         super().deactivate()
