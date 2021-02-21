@@ -21,3 +21,13 @@ There are 6 powerups:
 * Press a to move the paddle left.
 * Press d to move the paddle right.
 * Press space to release the ball from paddle.
+### Starting the Game
+* To run the game, you need numpy and colorama. To install 
+```
+cd 2019114006
+pip3 install numpy colorama
+```
+To run the game,
+```
+python3 main.py
+```
