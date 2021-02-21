@@ -66,7 +66,7 @@ class board():
     #     for k in range(0,2):
     #         self._board[20+k][45]=self._board[20+k][46]=self._board[20+k][47]=self._board[20+k][48]=ob
     
-    def createlevel1(self):
+    def createlevel3(self):
         # arr=[[0,0,5], [2,6,5], [4, 12, 5], [6,18,5],]
         arr=[[16, 6, 1], [16, 18, 2], [16, 24, 3], [16, 30, 4], [16, 42, 3], [16, 48, 4], [16, 54, 1], [16, 60, 4], [16, 66, 1], [16, 72, 2], [16, 78, 3], [16, 84, 4], [16, 90, 0], [16, 96, 1], [16, 102, 2], [16, 108, 3], [16, 114, 4]]
         arr+=[ [2, 18, 3], [2, 24, 2], [2, 30, 4], [2, 42, 4], [2, 48, 1], [2, 54, 0], [2, 60, 1], [2, 66, 2], [2, 72, 4], [2, 78, 1], [2, 84, 0], [2, 90, 4], [2, 96, 3], [2, 102, 4], [2, 108, 2], [2, 114, 1]]
@@ -76,8 +76,18 @@ class board():
         for typ in arr:
             ob=self.get_brick(typ[0],typ[1],typ[2])
             for a in range(0,6):
-                for b in range(0,2):
-                    self._board[typ[0]+b][typ[1]+a]=ob
+                    self._board[typ[0]][typ[1]+a]=ob
+    
+    def createlevel1(self):
+        arr=[[4, 18, 2], [4, 24, 0], [4, 30, 2], [4, 36, 1], [4, 42, 2], [4, 48, 1], [6, 18, 1], [6, 24, 1], [6, 30, 1], [6, 36, 2], [6, 42, 2], [6, 48, 2], [8, 18, 2], [8, 24, 2], [8, 30, 1], [8, 36, 4], [8, 42, 2], [8, 48, 3], [10, 18, 3], [10, 24, 4], [10, 30, 3], [10, 36, 1], [10, 42, 2], [10, 48, 3], [12, 18, 1], [12, 24, 3], [12, 30, 1], [12, 36, 0], [12, 42, 1], [12, 48, 0], [14, 18, 4], [14, 24, 0], [14, 30, 2], [14, 36, 3], [14, 42, 0], [14, 48, 1]]
+        arr+=[[4, 60, 0], [4, 66, 2], [4, 72, 0], [4, 78, 2], [4, 84, 0], [4, 90, 2], [6, 60, 0], [6, 66, 0], [6, 72, 0], [6, 78, 0], [6, 84, 0], [6, 90, 0], [8, 60, 4], [8, 66, 2], [8, 72, 0], [8, 78, 1], [8, 84, 4], [8, 90, 2], [10, 60, 0], [10, 66, 1], [10, 72, 2], [10, 78, 3], [10, 84, 4], [10, 90, 0], [12, 60, 0], [12, 66, 1], [12, 72, 0], [12, 78, 1], [12, 84, 0], [12, 90, 1], [14, 60, 4], [14, 66, 0], [14, 72, 2], [14, 78, 3], [14, 84, 0], [14, 90, 1]]
+        arr+=[[4, 102, 2], [4, 108, 1], [4, 114, 0], [4, 120, 4], [6, 102, 2], [6, 108, 0], [6, 114, 0], [6, 120, 0], [8, 102, 0], [8, 108, 2], [8, 114, 1], [8, 120, 0], [10, 102, 0], [10, 108, 1], [10, 114, 0], [10, 120, 0], [12, 102, 2], [12, 108, 4], [12, 114, 0], [12, 120, 1], [14, 102, 4], [14, 108, 2], [14, 114, 0], [14, 120, 1]]
+        arr+=[[4,18,5],[4,24,5],[5,24,5],[6,30,5],[7,36,5],[8,36,5]]
+        arr+=[[10,36,5],[11,36,5],[12,30,5],[13,24,5],[14,24,5],[15,18,5]]
+        for typ in arr:
+            ob=self.get_brick(typ[0],typ[1],typ[2])
+            for a in range(0,6):
+                    self._board[typ[0]][typ[1]+a]=ob
 
     def liveslost(self):
         self.remaining_lives-=1
@@ -114,6 +124,12 @@ class board():
             print_str+="\u23B9"
             y=0
             while y<len(self._board[x]):
+                if (x==self._paddle.x and y==self._paddle.y):
+                    for k in range(self._paddle.length):
+                        print_str+="\u2588"
+                    # print("\u2588", end="")
+                    y+=self._paddle.length
+                    continue
                 if(isinstance(self._board[x][y], brick.brick)) and self._board[x][y].lvl>0:
                     # print(self._board[x][y].lvl, end="")
                     ob=self._board[x][y]
@@ -145,12 +161,7 @@ class board():
                         y+=1
                         print_str+=Fore.CYAN+"\u2588" +Style.RESET_ALL
                         continue
-                if (x==self._paddle.x and y==self._paddle.y):
-                    for k in range(self._paddle.length):
-                        print_str+="\u2588"
-                    # print("\u2588", end="")
-                    y+=self._paddle.length
-                    continue
+                
                 # elif (x==math.floor(self._ball.x) and y==math.floor(self._ball.y)):
                 #     # print("\u2B24", end="")
                 #     print_str+="\u2B24"
@@ -193,7 +204,7 @@ class board():
     def droppows(self):
         for pow_up in self._powerups:
             pow_up.droppowerup()
-            if pow_up.x==global_stuff.rows-2 and pow_up.y>=self._paddle.y and pow_up.y<=self._paddle.y+self._paddle.length:
+            if pow_up.x==self._paddle.x-1 and pow_up.y>=self._paddle.y and pow_up.y<=self._paddle.y+self._paddle.length:
                 pow_up.execute(self)
     
     def reducepows(self):
@@ -229,5 +240,5 @@ class board():
     
     def increase_score(self, val):
         self.score+=val
-        if self.score>=1310:
+        if self.score>=862.5:
             self.gameon=0

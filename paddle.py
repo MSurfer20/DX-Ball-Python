@@ -1,8 +1,8 @@
 import global_stuff 
-class paddle:
+from entity import entity
+class paddle(entity):
     def __init__(self, x, y):
-        self.x=x
-        self.y=y
+        super().__init__(x,y)
         self.length=20
         self.actual_length=20
         self.stick=False

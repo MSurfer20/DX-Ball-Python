@@ -3,7 +3,7 @@ class PowerUp:
         self.remaining_time=-1
         self.x=x
         self.y=y
-        self.v_x=2
+        self.v_x=1
         self.icon=icon
     
     def execute(self):

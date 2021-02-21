@@ -2,11 +2,11 @@ import math
 from global_stuff import *
 import brick
 from colorama import Fore, Style
+from entity import entity
 
-class ball:
+class ball(entity):
     def __init__(self, x, y, x_vel=-1, y_vel=1, stuck=True, fire=False):
-        self.x=x
-        self.y=y
+        super().__init__(x,y)
         self.x_vel=x_vel
         self.y_vel=y_vel
         self.stuck=stuck
@@ -67,12 +67,12 @@ class ball:
             else:
                 self.reflect_y_velocity()
                 board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board)
-        if board.check_bricks(int(curr_x+x_dir), int(curr_y)):
+        if board.check_bricks(int(curr_x+x_dir), int(curr_y)) and not board.check_bricks(int(curr_x), int(curr_y)):
             if self.fire:
                 board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board)
             else:
                 if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
-                    self.x_vel=self.x_vel*-1
+                    self.reflect_x_velocity()
                     board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board)
     
     def reflect_x_velocity(self):
@@ -89,8 +89,9 @@ class ball:
         curr_y=math.floor(self.y)
         if x_dir==1 and curr_y>=paddle.y and curr_y<=paddle.y+paddle.length and curr_x==rows-2:
             self.reflect_x_velocity()
-            val=paddle.y+(paddle.length)/2-curr_y
-            self.y_vel=-val*0.5
+            dist_from_centre=paddle.y+(paddle.length)/2-curr_y
+            factor_change=math.floor(dist_from_centre/2.5)
+            self.y_vel=-factor_change*0.5
             if paddle.stick:
                 self.stuck=True
 

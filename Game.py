@@ -18,23 +18,24 @@ class Game:
     def rungame(self):
         self.current_board.createlevel1()
         while(self.game_on==1):
-            self.current_board.printboard()
             c=input_to(getch)
             if c=='q':
                 sys.exit(0)
             if c=='a' or c=='d':
                 self.current_board.moveboardpaddle(c)
             if c=='p':
-                print(current_board)
+                for ball in self.current_board._balls:
+                    print(ball.x_vel, ball.y_vel)
                 input()
             if c==' ':
                 self.current_board.releaseballs()
             if c:
                 time.sleep(0.05)    
-            self.current_board.detectcollisionballs()
             self.current_board.moveballs()
+            self.current_board.detectcollisionballs()
             self.current_board.droppows()
             self.current_board.reducepows()
+            self.current_board.printboard()
             time.sleep(0.02)
         system('clear')
         if self.game_on==-1:

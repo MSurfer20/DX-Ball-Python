@@ -1,3 +1,4 @@
+from entity import entity
 from powerup import PowerUp
 from expandpaddle import expandpaddle
 from shrinkpaddle import shrinkpaddle
@@ -8,10 +9,9 @@ from thruball import thruball
 import global_stuff
 import random
 
-class brick:
+class brick(entity):
     def __init__(self, x, y):
-        self.x=x
-        self.y=y
+        super().__init__(x,y)
         self.lvl=-1
     
     def reducelvl(self, board):
@@ -110,13 +110,13 @@ class explodingbrick(brick):
         self.lvl=0
         self.increasescore(board)
         board._board[self.x][self.y]=None
-        if self.y+6<global_stuff.cols and board._board[self.x+2][self.y+6]:
-            board._board[self.x+2][self.y+6].destroy(board)
+        if self.y+6<global_stuff.cols and board._board[self.x+1][self.y+6]:
+            board._board[self.x+1][self.y+6].destroy(board)
         if self.y+6<global_stuff.cols and board._board[self.x][self.y+6]:
             board._board[self.x][self.y+6].destroy(board)
         for k in range(-1,7):
-            if board._board[self.x+2][self.y+k]:
-                board._board[self.x+2][self.y+k].destroy(board)
+            if board._board[self.x+1][self.y+k]:
+                board._board[self.x+1][self.y+k].destroy(board)
         if board._board[self.x-1][self.y-1]:
             board._board[self.x-1][self.y-1].destroy(board)
         if board._board[self.x][self.y-1]:
