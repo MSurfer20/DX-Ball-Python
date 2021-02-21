@@ -9,8 +9,7 @@ class fastball(PowerUp):
     def execute(self, board):
         super().execute()
         for ball in board._balls:
-            ball.y_vel=ball.y_vel+math.copysign(1,ball.y_vel)
-            pass
+            ball.increase_ball_velocity()
     
     def deactivate(self, paddle):
         pass

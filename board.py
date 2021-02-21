@@ -95,7 +95,6 @@ class board():
         if self.remaining_lives == 0:
             system('clear')
             self.gameon=-1
-            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
 
         else:
             a=random.randint(self._paddle.y, self._paddle.y+self._paddle.length)
@@ -104,6 +103,7 @@ class board():
     def finish_powerups(self):
         for powu in self._powerups:
             if powu.remaining_time>0:
+                self._powerups.remove(powu)
                 powu.deactivate(self)
         self._powerups=[]
 
@@ -211,8 +211,8 @@ class board():
         for index, pow_up in enumerate(self._powerups):
             pow_up.reducetime()
             if pow_up.remaining_time==0:
-                pow_up.deactivate(self)
                 self._powerups.remove(pow_up)
+                pow_up.deactivate(self)
         
     def moveballs(self):
         for index, ball in enumerate(self._balls):

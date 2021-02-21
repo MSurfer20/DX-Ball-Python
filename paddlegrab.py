@@ -11,5 +11,6 @@ class paddlegrab(PowerUp):
         board._paddle.stick=True
 
     def deactivate(self, board):
+        super().deactivate()
         board._paddle.stick=False
         pass

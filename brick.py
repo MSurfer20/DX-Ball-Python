@@ -18,21 +18,18 @@ class brick(entity):
         self.lvl-=1
         if self.lvl==0:
             for y in range(0,6):
-                for x in range(0,2):
-                    board._board[self.x+x][self.y+y]=None
+                board._board[self.x][self.y+y]=None
             self.increasescore(board)
             board.add_powerup(self.generate_powerup(self.x,self.y))
-        return None
     
     def destroy(self, board):
         self.lvl=0
         for y in range(0,6):
-            for x in range(0,2):
-                board._board[self.x+x][self.y+y]=None
+            board._board[self.x][self.y+y]=None
         self.increasescore(board)
         board.add_powerup(self.generate_powerup(self.x,self.y))
     
-    def increasescore(self, board):
+    def increasescore(self, board): #overloaded
         pass
         
     
@@ -59,7 +56,7 @@ class brick1(brick):
         self.lvl=1
 
     def increasescore(self, board):
-        board.score+=5
+        board.increase_score(5)
     
 class brick2(brick):
     def __init__(self, x, y):
@@ -67,7 +64,8 @@ class brick2(brick):
         self.lvl=2
 
     def increasescore(self, board):
-        board.score+=10
+        board.increase_score(10)
+
 
 class brick3(brick):
     def __init__(self, x, y):
@@ -75,7 +73,9 @@ class brick3(brick):
         self.lvl=3
 
     def increasescore(self, board):
-        board.score+=15
+        # board.score+=15
+        board.increase_score(15)
+
 
 class brick4(brick):
     def __init__(self, x, y):
@@ -83,7 +83,9 @@ class brick4(brick):
         self.lvl=4
 
     def increasescore(self, board):
-        board.score+=20
+        # board.score+=20
+        board.increase_score(20)
+
 
 class brickfixed(brick):
     def __init__(self, x, y):
@@ -127,4 +129,4 @@ class explodingbrick(brick):
         board.add_powerup(self.generate_powerup(self.x,self.y))
     
     def increasescore(self, board):
-        board.score+=2.5
+        board.increase_score(2.5)

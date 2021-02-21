@@ -87,20 +87,17 @@ class ball(entity):
         y_dir=int(math.copysign(1,self.y_vel))
         curr_x=math.floor(self.x)
         curr_y=math.floor(self.y)
-        if x_dir==1 and curr_y>=paddle.y and curr_y<=paddle.y+paddle.length and curr_x==rows-2:
+        if x_dir==1 and curr_y>=paddle.get_left_coor() and curr_y<=paddle.get_right_coor() and curr_x==rows-2:
             self.reflect_x_velocity()
-            dist_from_centre=paddle.y+(paddle.length)/2-curr_y
+            dist_from_centre=paddle.get_left_coor()+(paddle.get_length())/2-curr_y
             factor_change=math.floor(dist_from_centre/2.5)
             self.y_vel=-factor_change*0.5
-            if paddle.stick:
+            if paddle.isstick():
                 self.stuck=True
 
     
-    def movestuckball(self, key):
-        if key=='d':
-            self.y+=3
-        elif key=='a':
-            self.y-=3
+    def movestuckball(self, dist):
+        self.y+=dist
     
     def releaseball(self):
         self.stuck=False 
@@ -112,3 +109,9 @@ class ball(entity):
     def stopfire(self):
         self.fire=False
         self.icon="\u2B24"
+
+    def isstuck(self):
+        return self.stuck
+
+    def increase_ball_velocity(self):
+        self.y_vel=self.y_vel+math.copysign(1,self.y_vel)
