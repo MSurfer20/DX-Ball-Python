@@ -34,6 +34,9 @@ class brick(entity):
         
     
     def generate_powerup(self, x,y):
+        num=random.randint(0,1)
+        if num:
+            return
         num=random.randint(0,5)
         if num==0:
             return expandpaddle(x,y)

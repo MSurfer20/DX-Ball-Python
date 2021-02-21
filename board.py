@@ -18,7 +18,11 @@ class board():
         self._columns=columns
         self._board = np.empty(shape=(rows+1, columns+1), dtype=np.object)
         self._paddle = paddle(rows-1,columns/2)
-        self._balls = [ball(rows-2, random.randint(int(self._paddle.y), int(self._paddle.y+self._paddle.length)))]
+        posn=random.randint(int(self._paddle.y), int(self._paddle.y+self._paddle.length))
+        dist_from_centre=self._paddle.get_left_coor()+(self._paddle.get_length())/2-posn
+        factor_change=math.floor(dist_from_centre/2.5)
+        y_vel=-factor_change*0.5
+        self._balls = [ball(rows-2, posn, -1, y_vel)]
         self._powerups =[]
         self.score=0
         self.remaining_lives=10
@@ -97,8 +101,11 @@ class board():
             self.game_on=-1
 
         else:
-            a=random.randint(self._paddle.y, self._paddle.y+self._paddle.length)
-            self._balls=[ball(global_stuff.rows-2, a)]
+            posn=random.randint(int(self._paddle.y), int(self._paddle.y+self._paddle.length))
+            dist_from_centre=self._paddle.get_left_coor()+(self._paddle.get_length())/2-posn
+            factor_change=math.floor(dist_from_centre/2.5)
+            y_vel=-factor_change*0.5
+            self._balls = [ball(global_stuff.rows-2, posn, -1, y_vel)]
 
     def finish_powerups(self):
         for powu in self._powerups:

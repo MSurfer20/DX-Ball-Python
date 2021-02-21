@@ -23,11 +23,11 @@ class paddle(entity):
     
     def increasesize(self):
         self.actual_length+=6
-        self.length=max(self.actual_length,2)
+        self.length=max(self.actual_length,6)
     
     def decreasesize(self):
         self.actual_length-=6
-        self.length=max(self.actual_length,2)
+        self.length=max(self.actual_length,6)
     
     def get_left_coor(self):
         return self.y
