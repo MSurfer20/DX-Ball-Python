@@ -31,7 +31,7 @@ class brick(entity):
         self.increasescore(board)
         a=self.generate_powerup(self.x,self.y)
         if a:
-            board.add_powerup()
+            board.add_powerup(a)
     
     def increasescore(self, board): #overloaded
         pass
