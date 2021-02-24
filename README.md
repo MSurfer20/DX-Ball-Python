@@ -31,3 +31,4 @@ To run the game,
 ```
 python3 main.py
 ```
+**NOTE**: The game is made only using python and numpy(with colorama for colors). No curses or game libraries have been used.
