@@ -64,17 +64,23 @@ class ball(entity):
         curr_y=math.floor(self.y)
         if board.check_bricks(int(curr_x), int(curr_y+y_dir)):
             if self.fire:
-                board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board)
+                board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board, self)
             else:
+                # if time.time()-board.level_time>10:
+                # if True:
+                #     board.fallbricks()
+                board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board, self)
                 self.reflect_y_velocity()
-                board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board)
         if board.check_bricks(int(curr_x+x_dir), int(curr_y)) and not board.check_bricks(int(curr_x), int(curr_y)):
             if self.fire:
-                board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board)
+                board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board, self)
             else:
                 if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
+                    # if time.time()-board.level_time>10:
+                    # if True:
+                    #     board.fallbricks()
+                    board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board, self)
                     self.reflect_x_velocity()
-                    board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board)
     
     def reflect_x_velocity(self):
         self.x_vel=self.x_vel*-1

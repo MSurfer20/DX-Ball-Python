@@ -16,7 +16,7 @@ class Game:
     
     def rungame(self):
         self.current_board.createlevel1()
-        while(self.current_board.game_on==1):
+        while(self.current_board.game_on>0):
             c=input_to(getch)
             if c=='q':
                 sys.exit(0)
@@ -24,14 +24,21 @@ class Game:
                 self.current_board.moveboardpaddle(c)
             if c==' ':
                 self.current_board.releaseballs()
-            if c:
-                time.sleep(0.05)    
+            if c=='s' or self.current_board.game_on==3:
+                self.current_board=board(rows, cols, self.current_board.score, self.current_board.start_time)
+                self.current_board.createlevel1()
+            if c=='c':
+                self.current_board.shoot_bullets()
+            if c=='p':
+                input()
+            self.current_board.detectbulletcollision()
             self.current_board.moveballs()
             self.current_board.detectcollisionballs()
             self.current_board.droppows()
             self.current_board.reducepows()
+            self.current_board.changehardnessbrick()
             self.current_board.printboard()
-            time.sleep(0.02)
+            # time.sleep(0.02)
         system('clear')
         if self.current_board.game_on==-1:
             print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")

@@ -10,10 +10,11 @@ from colorama import Fore, Style, Style
 import sys
 import time
 import datetime
+from bullets import bullet
 
 
 class board():
-    def __init__(self, rows, columns):
+    def __init__(self, rows, columns, score=0, strttime=0):
         self._rows=rows
         self._columns=columns
         self._board = np.empty(shape=(rows+1, columns+1), dtype=np.object)
@@ -24,10 +25,15 @@ class board():
         y_vel=-factor_change*0.5
         self._balls = [ball(rows-2, posn, -1, y_vel)]
         self._powerups =[]
-        self.score=0
+        self.score=score
         self.remaining_lives=10
-        self.start_time=time.time()
+        if strttime==0:
+            self.start_time=time.time()
+        else:
+            self.start_time=strttime
         self.game_on=1
+        self.level_time=time.time()
+        self._bullets=[]
     
     def getdim(self):
         return (self._rows, self._columns)
@@ -45,8 +51,10 @@ class board():
             return brick.brickfixed(x,y)
         elif typ==5:
             return brick.explodingbrick(x,y)
-        else:
+        elif typ==6:
             return None
+        elif typ==7:
+            return brick.colorchangingbrick(x,y)
     
     def createlevel2(self):
         for x in range(6, 22, 2):
@@ -83,9 +91,9 @@ class board():
                     self._board[typ[0]][typ[1]+a]=ob
     
     def createlevel1(self):
-        arr=[[4, 18, 2], [4, 24, 0], [4, 30, 2], [4, 36, 1], [4, 42, 2], [4, 48, 1], [6, 18, 1], [6, 24, 1], [6, 30, 1], [6, 36, 2], [6, 42, 2], [6, 48, 2], [8, 18, 2], [8, 24, 2], [8, 30, 1], [8, 36, 4], [8, 42, 2], [8, 48, 3], [10, 18, 3], [10, 24, 4], [10, 30, 3], [10, 36, 1], [10, 42, 2], [10, 48, 3], [12, 18, 1], [12, 24, 3], [12, 30, 1], [12, 36, 0], [12, 42, 1], [12, 48, 0], [14, 18, 4], [14, 24, 0], [14, 30, 2], [14, 36, 3], [14, 42, 0], [14, 48, 1]]
-        arr+=[[4, 60, 0], [4, 66, 2], [4, 72, 0], [4, 78, 2], [4, 84, 0], [4, 90, 2], [6, 60, 0], [6, 66, 0], [6, 72, 0], [6, 78, 0], [6, 84, 0], [6, 90, 0], [8, 60, 4], [8, 66, 2], [8, 72, 0], [8, 78, 1], [8, 84, 4], [8, 90, 2], [10, 60, 0], [10, 66, 1], [10, 72, 2], [10, 78, 3], [10, 84, 4], [10, 90, 0], [12, 60, 0], [12, 66, 1], [12, 72, 0], [12, 78, 1], [12, 84, 0], [12, 90, 1], [14, 60, 4], [14, 66, 0], [14, 72, 2], [14, 78, 3], [14, 84, 0], [14, 90, 1]]
-        arr+=[[4, 102, 2], [4, 108, 1], [4, 114, 0], [4, 120, 4], [6, 102, 2], [6, 108, 0], [6, 114, 0], [6, 120, 0], [8, 102, 0], [8, 108, 2], [8, 114, 1], [8, 120, 0], [10, 102, 0], [10, 108, 1], [10, 114, 0], [10, 120, 0], [12, 102, 2], [12, 108, 4], [12, 114, 0], [12, 120, 1], [14, 102, 4], [14, 108, 2], [14, 114, 0], [14, 120, 1]]
+        arr=[[4, 18, 2], [4, 24, 0], [4, 30, 2], [4, 36, 1], [4, 42, 2], [4, 48, 1], [6, 18, 1], [6, 24, 1], [6, 30, 1], [6, 36, 2], [6, 42, 2], [6, 48, 2], [8, 18, 2], [8, 24, 2], [8, 30, 1], [8, 36, 4], [8, 42, 2], [8, 48, 3], [10, 18, 3], [10, 24, 4], [10, 30, 3], [10, 36, 1], [10, 42, 2], [10, 48, 3], [12, 18, 1], [12, 24, 3], [12, 30, 1], [12, 36, 0], [12, 42, 1], [12, 48, 0], [14, 18, 4], [14, 24, 0], [14, 30, 2], [14, 36, 3], [14, 42, 0], [14, 48, 7]]
+        arr+=[[4, 60, 7], [4, 66, 2], [4, 72, 0], [4, 78, 2], [4, 84, 0], [4, 90, 2], [6, 60, 0], [6, 66, 0], [6, 72, 0], [6, 78, 0], [6, 84, 0], [6, 90, 0], [8, 60, 4], [8, 66, 2], [8, 72, 0], [8, 78, 1], [8, 84, 4], [8, 90, 2], [10, 60, 0], [10, 66, 1], [10, 72, 2], [10, 78, 3], [10, 84, 4], [10, 90, 0], [12, 60, 0], [12, 66, 1], [12, 72, 0], [12, 78, 1], [12, 84, 0], [12, 90, 1], [14, 60, 4], [14, 66, 0], [14, 72, 2], [14, 78, 3], [14, 84, 0], [14, 90, 1]]
+        arr+=[[4, 102, 2], [4, 108, 1], [4, 114, 0], [4, 120, 7], [6, 102, 2], [6, 108, 0], [6, 114, 0], [6, 120, 0], [8, 102, 0], [8, 108, 2], [8, 114, 1], [8, 120, 0], [10, 102, 0], [10, 108, 1], [10, 114, 0], [10, 120, 0], [12, 102, 2], [12, 108, 4], [12, 114, 0], [12, 120, 1], [14, 102, 4], [14, 108, 2], [14, 114, 0], [14, 120, 1]]
         arr+=[[4,18,5],[4,24,5],[5,24,5],[6,30,5],[7,36,5],[8,36,5]]
         arr+=[[10,36,5],[11,36,5],[12,30,5],[13,24,5],[14,24,5],[15,18,5]]
         for typ in arr:
@@ -136,6 +144,7 @@ class board():
                     # print("\u2588", end="")
                     y+=self._paddle.length
                     continue
+                
                 if(isinstance(self._board[x][y], brick.brick)) and self._board[x][y].lvl>0:
                     # print(self._board[x][y].lvl, end="")
                     ob=self._board[x][y]
@@ -191,6 +200,16 @@ class board():
                     if flag:
                         y+=2
                         continue
+                    flag=0
+                    for bull in self._bullets:
+                        if bull.x==x and bull.y==y:
+                            # print("\u2795",end="")
+                            print_str+="\u8593"
+                            flag=1
+                            break
+                    if flag:
+                        y+=2
+                        continue
                     print_str+=" "
                     y+=1
                 
@@ -222,6 +241,8 @@ class board():
     def moveballs(self):
         for index, ball in enumerate(self._balls):
             ball.moveball(self)
+        for bullet in self._bullets:
+            bullet.moveball(self)
     
     def detectcollisionballs(self):
         for ball in self._balls:
@@ -247,3 +268,31 @@ class board():
         self.score+=val
         if self.score>=865:
             self.game_on=0
+    
+    def fallbricks(self):
+        for row in range(len(self._board)):
+            for column in range(len(self._board[row])):
+                if isinstance(self._board[row][column], brick.brick):
+                    self._board[row][column].x+=1
+                    column+=4
+    
+    def changehardnessbrick(self):
+        for x in range(len(self._board)):
+            for y in range(len(self._board[x])):
+                if isinstance(self._board[x][y], brick.colorchangingbrick):
+                # if True:
+                    # print(self._board[x][y].lvl)
+                    # input()
+                    self._board[x][y].changecolor()
+                    # self._board[row][column]
+                    y+=4
+    
+    
+    def shoot_bullets(self):
+        if True:
+            self._bullets.append(bullet(self._paddle.x, self._paddle.y))
+            self._bullets.append(bullet(self._paddle.x-1, self._paddle.y+self._paddle.length-1))
+    
+    def detectbulletcollision(self):
+        for bullet in self._bullets:
+            bullet.checkcollision(self)
