@@ -1,5 +1,6 @@
 from powerup import PowerUp
 from ball import ball
+import os
 
 class laser(PowerUp):
     def __init__(self, x, y, x_vel, y_vel):
@@ -17,6 +18,9 @@ class laser(PowerUp):
         if check_flag==0:
             super().execute()
             board._paddle.shoot=True
+            system("vlc --intf dummy --loop laserfinal.mp3 &")
+
     
     def deactivate(self, board):
         board._paddle.shoot=False
+        os.system("killall vlc")

@@ -7,8 +7,10 @@ from fastball import fastball
 from paddlegrab import paddlegrab
 from thruball import thruball
 from laser import laser
+from fireball import fireball
 import global_stuff
 import random
+import os
 
 class brick(entity):
     def __init__(self, x, y):
@@ -40,10 +42,10 @@ class brick(entity):
         pass
     
     def generate_powerup(self, x,y, x_vel, y_vel):
-        # num=random.randint(0,1)
-        # if num:
-        #     return
-        num=random.randint(0,6)
+        num=random.randint(0,1)
+        if num:
+            return
+        num=random.randint(0,7)
         if num==0:
             return expandpaddle(x,y, x_vel, y_vel)
         elif num==1:
@@ -58,6 +60,8 @@ class brick(entity):
             return thruball(x,y,x_vel,y_vel)
         elif num==6:
             return laser(x,y,x_vel,y_vel)
+        elif num==7:
+            return fireball(x, y, x_vel, y_vel)
         
             
     

@@ -5,6 +5,7 @@ import brick
 from colorama import Fore, Style
 from entity import entity
 import time
+import os
 from playsound import playsound
 
 
@@ -73,6 +74,7 @@ class ball(entity):
             brick_x=board._board[int(curr_x)][int(curr_y+y_dir)].x
             brick_y=board._board[int(curr_x)][int(curr_y+y_dir)].y
             if self.gold_ball:
+                os.system("aplay Explosion+1.mp3 &")
                 board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board, self)
                 if brick_y+6<global_stuff.cols and board._board[brick_x+1][brick_y+6]:
                     board._board[brick_x+1][brick_y+6].destroy(board, self)
@@ -99,6 +101,7 @@ class ball(entity):
                 board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board, self)
             else:
                 # if time.time()-board.level_time>10:
+                os.system("aplay brickwall.wav &")
                 board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board, self)
                 self.reflect_y_velocity()
            
@@ -107,6 +110,7 @@ class ball(entity):
             brick_x=board._board[int(curr_x+x_dir)][int(curr_y)].x
             brick_y=board._board[int(curr_x+x_dir)][int(curr_y)].y
             if self.gold_ball:
+                os.system("aplay Explosion+1.mp3 &")
                 board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board, self)
                 if brick_y+6<global_stuff.cols and board._board[brick_x+1][brick_y+6]:
                     board._board[brick_x+1][brick_y+6].destroy(board, self)
@@ -134,6 +138,7 @@ class ball(entity):
             else:
                 if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
                     # if time.time()-board.level_time>10:
+                    os.system("aplay brickwall.wav &")
                     board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board, self)
                     self.reflect_x_velocity()
             
@@ -159,8 +164,8 @@ class ball(entity):
             self.y_vel=-factor_change*0.5
             if paddle.isstick():
                 self.stuck=True
-            # else:
-            #     playsound("./bounce.wav")
+            else:
+                os.system("aplay bounce.wav &")
 
     
     def movestuckball(self, dist):
@@ -185,9 +190,9 @@ class ball(entity):
         self.icon=Fore.YELLOW+"\u2B24"+Style.RESET_ALL
     
     def stopgold(self):
-        self.fire=False
+        self.gold_ball=False
         if self.fire:
-            self.icon="\u2B24"
+            self.icon=Fore.RED+"\u2B24"+Style.RESET_ALL
         else:
             self.icon="\u2B24"
 
@@ -211,19 +216,31 @@ class ball(entity):
         if ufo.check(int(curr_x), int(curr_y+y_dir)):
                 # if time.time()-board.level_time>10:
             ufo.reducelvl()
-            flag=1
-            if y_dir==1:
-                self.y=ufo.y-1
-            else:
-                self.y=ufo.y+ufo.length+1
-            self.reflect_y_velocity()
-        if ufo.check(int(curr_x+x_dir), int(curr_y)):
-                # if time.time()-board.level_time>10:
-            if flag==0:
-                ufo.reducelvl()
-            self.reflect_x_velocity()
+            board.increase_score(30)
             if ufo.health==70:
                 board.spawnblocks1()
                 pass
             if ufo.health==40:
                 board.spawnblocks2()
+            if ufo.health==0:
+                board.game_on=2
+            os.system("aplay bounce.wav &")
+            flag=1
+            if self.y-ufo.y>ufo.y+ufo.length-self.y:
+                self.y_vel=abs(self.y_vel)
+                self.y=ufo.y+ufo.length+1
+            else:
+                self.y_vel=-(abs(self.y_vel))
+                self.y=ufo.y-1
+        elif ufo.check(int(curr_x+x_dir), int(curr_y)):
+                # if time.time()-board.level_time>10:
+            os.system("aplay bounce.wav &")
+            if flag==0:
+                ufo.reducelvl()
+                board.increase_score(30)
+                if ufo.health==70:
+                    board.spawnblocks1()
+                    pass
+                if ufo.health==40:
+                    board.spawnblocks2()
+            self.reflect_x_velocity()

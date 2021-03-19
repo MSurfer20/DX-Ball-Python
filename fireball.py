@@ -3,7 +3,7 @@ from ball import ball
 
 class fireball(PowerUp):
     def __init__(self, x, y, x_vel, y_vel):
-        icon="F"
+        icon="💥"
         super().__init__(x, y, x_vel, y_vel, icon)
     
     def execute(self, board):

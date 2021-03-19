@@ -18,6 +18,7 @@ class Game:
         while(self.current_board.game_on==1):
             c=input_to(getch)
             if c=='q':
+                system("killall vlc")
                 sys.exit(0)
             if c=='a' or c=='d':
                 self.current_board.moveboardpaddle(c)
@@ -54,7 +55,7 @@ class Game:
             print("PRESS ENTER TO PLAY AGAIN")
         else:
             self.current_board=board(rows, cols, self.current_board.score, self.current_board.start_time, self.current_board.remaining_lives)
-            self.current_board.createlevel3()
+            self.current_board.createlevel6()
             self.gameloop()
             system('clear')
             if self.current_board.game_on==-1:
@@ -64,15 +65,29 @@ class Game:
                 print("PRESS ENTER TO PLAY AGAIN")
             else:
                 self.current_board=board(rows, cols, self.current_board.score, self.current_board.start_time, self.current_board.remaining_lives)
-                self.current_board.createlevel5()
+                self.current_board.createlevel7()
                 self.gameloop()
+                system('clear')
                 if self.current_board.game_on==-1:
                     print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
                     print("\t\t\tSCORE: ",self.current_board.score)
                     print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))
                     print("PRESS ENTER TO PLAY AGAIN")
                 else:
-                    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tYOU WON THE GAME!!!")
-                    print("\t\t\tSCORE: ",self.current_board.score)
-                    print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))
-                    print("PRESS ENTER TO PLAY AGAIN")
+                    self.current_board=board(rows, cols, self.current_board.score, self.current_board.start_time, self.current_board.remaining_lives)
+                    self.current_board.createlevel5()
+                    system("vlc --intf dummy --loop bossmusic.mp3 &")
+                    self.gameloop()
+                    system("killall vlc")
+                    if self.current_board.game_on==-1:
+                        system('clear')
+                        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tGAME OVER!!!")
+                        print("\t\t\tSCORE: ",self.current_board.score)
+                        print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))
+                        print("PRESS ENTER TO PLAY AGAIN")
+                    else:
+                        system('clear')
+                        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tYOU WON THE GAME!!!")
+                        print("\t\t\tSCORE: ",self.current_board.score)
+                        print("\t\t\tTIME PLAYED: ",str(datetime.timedelta(seconds=int(time.time()-self.current_board.start_time))))
+                        print("PRESS ENTER TO PLAY AGAIN")
