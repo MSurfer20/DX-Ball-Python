@@ -120,6 +120,7 @@ class explodingbrick(brick):
         self.lvl=20
 
     def reducelvl(self, board, ball):
+        os.system("aplay Explosion.wav &")
         return self.destroy(board, ball)
 
     def destroy(self, board, ball):

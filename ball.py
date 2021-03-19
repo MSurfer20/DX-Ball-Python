@@ -49,11 +49,13 @@ class ball(entity):
         return False
 
     def topwallcollision(self):
+        os.system("aplay brickwall.wav &")
         self.reflect_x_velocity()
         if self.x<1:
             self.x=0
     
     def sidewallcollision(self):
+        os.system("aplay brickwall.wav &")
         self.reflect_y_velocity()
         if self.y<1:
             self.y=0
