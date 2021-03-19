@@ -26,6 +26,7 @@ class Game:
                 self.current_board.releaseballs()
             if c=='s':
                 self.current_board.game_on=0
+                system("killall vlc")
             if c=='p':
                 input()
             if c is not None:

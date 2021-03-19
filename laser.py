@@ -18,7 +18,7 @@ class laser(PowerUp):
         if check_flag==0:
             super().execute()
             board._paddle.shoot=True
-            system("vlc --intf dummy --loop laserfinal.mp3 &")
+            os.system("vlc --intf dummy --loop laserfinal.mp3 &")
 
     
     def deactivate(self, board):
