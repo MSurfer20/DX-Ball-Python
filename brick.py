@@ -46,6 +46,7 @@ class brick(entity):
         if num:
             return
         num=random.randint(0,7)
+        # num=7
         if num==0:
             return expandpaddle(x,y, x_vel, y_vel)
         elif num==1:

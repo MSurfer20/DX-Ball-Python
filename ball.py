@@ -74,7 +74,7 @@ class ball(entity):
             brick_x=board._board[int(curr_x)][int(curr_y+y_dir)].x
             brick_y=board._board[int(curr_x)][int(curr_y+y_dir)].y
             if self.gold_ball:
-                os.system("aplay Explosion+1.mp3 &")
+                os.system("aplay Explosion.wav &")
                 board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board, self)
                 if brick_y+6<global_stuff.cols and board._board[brick_x+1][brick_y+6]:
                     board._board[brick_x+1][brick_y+6].destroy(board, self)
@@ -98,6 +98,7 @@ class ball(entity):
                 #     board.add_powerup(a)
             
             elif self.fire:
+                os.system("aplay Explosion.wav &")
                 board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board, self)
             else:
                 # if time.time()-board.level_time>10:
@@ -110,7 +111,7 @@ class ball(entity):
             brick_x=board._board[int(curr_x+x_dir)][int(curr_y)].x
             brick_y=board._board[int(curr_x+x_dir)][int(curr_y)].y
             if self.gold_ball:
-                os.system("aplay Explosion+1.mp3 &")
+                os.system("aplay Explosion.wav &")
                 board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board, self)
                 if brick_y+6<global_stuff.cols and board._board[brick_x+1][brick_y+6]:
                     board._board[brick_x+1][brick_y+6].destroy(board, self)
@@ -134,6 +135,7 @@ class ball(entity):
                 # if a:
                     # board.add_powerup(a)
             elif self.fire:
+                os.system("aplay Explosion.wav &")
                 board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board, self)
             else:
                 if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
