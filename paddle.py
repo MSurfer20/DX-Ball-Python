@@ -1,6 +1,5 @@
 import global_stuff 
 from entity import entity
-from playsound import playsound
 
 class paddle(entity):
     def __init__(self, x, y):

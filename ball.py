@@ -6,7 +6,6 @@ from colorama import Fore, Style
 from entity import entity
 import time
 import os
-from playsound import playsound
 
 
 class ball(entity):
