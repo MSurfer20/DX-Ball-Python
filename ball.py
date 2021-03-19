@@ -9,7 +9,7 @@ from playsound import playsound
 
 
 class ball(entity):
-    def __init__(self, x, y, x_vel=-1, y_vel=1, stuck=True, fire=False, fast_ball=1, gold=True):
+    def __init__(self, x, y, x_vel=-1, y_vel=1, stuck=True, fire=False, fast_ball=1, gold=False):
         super().__init__(x,y)
         self.x_vel=x_vel
         self.y_vel=y_vel
@@ -152,7 +152,7 @@ class ball(entity):
         curr_y=math.floor(self.y)
         if x_dir==1 and curr_y>=paddle.get_left_coor() and curr_y<=paddle.get_right_coor() and curr_x==rows-2:
             self.reflect_x_velocity()
-            if time.time()-board.level_time>=30:
+            if time.time()-board.level_time>=30 and board.ufo is None:
                 board.fallbricks()
             dist_from_centre=paddle.get_left_coor()+(paddle.get_length())/2-curr_y
             factor_change=math.floor(dist_from_centre/2.5)
@@ -222,6 +222,8 @@ class ball(entity):
             if flag==0:
                 ufo.reducelvl()
             self.reflect_x_velocity()
-        if ufo.health==50:
-            # board.spawnblocks1()
-            pass
+            if ufo.health==70:
+                board.spawnblocks1()
+                pass
+            if ufo.health==40:
+                board.spawnblocks2()

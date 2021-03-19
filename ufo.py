@@ -12,10 +12,10 @@ class ufo(entity):
             max_d=min(3, global_stuff.cols-self.length-self.y+1)
             # for ball in board._balls:
             self.y+=max_d
-            for ball in board._balls:
-                if ball.x>=self.x and self.x+self.length>ball.x and ball.y>=self.y and ball.y<=self.y+self.width:
-                    ball.x=self.x+self.length+1
-                    ball.x_vel=abs(ball.x_vel)
+            # for ball in board._balls:
+            #     if ball.x>=self.x and self.x+self.length>ball.x and ball.y>=self.y and ball.y<=self.y+self.width:
+            #         ball.x=self.x+self.length+1
+            #         ball.x_vel=abs(ball.x_vel)
                 
             # for ball in balls:
             #     if ball.isstuck():

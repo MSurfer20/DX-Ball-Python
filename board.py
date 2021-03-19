@@ -14,6 +14,7 @@ from bullets import bullet
 from ufo import ufo
 from ufo_ascii import ufo_ascii
 from bombs import bomb
+from laser import laser
 
 
 class board():
@@ -47,20 +48,26 @@ class board():
     
     def get_brick(self, x, y, typ):
         if typ==0:
+            self.max_score+=5
             return brick.brick1(x,y)
         elif typ==1:
+            self.max_score+=10
             return  brick.brick2(x,y)
         elif typ==2:
+            self.max_score+=15
             return brick.brick3(x,y)
         elif typ==3:
+            self.max_score+=20
             return brick.brick4(x,y)
         elif typ==4:
             return brick.brickfixed(x,y)
         elif typ==5:
+            self.max_score+=20
             return brick.explodingbrick(x,y)
         elif typ==6:
             return None
         elif typ==7:
+            self.max_score+=20
             return brick.colorchangingbrick(x,y)
     
     def createlevel2(self):
@@ -113,6 +120,8 @@ class board():
     
     def createlevel5(self):
         self.ufo=ufo(4, self._paddle.y)
+        self.max_score=100000000000000000000
+
         
 
     def liveslost(self):
@@ -137,12 +146,18 @@ class board():
 
     def printboard(self):
         print_str=""
-        print_str+="LIVES: "+str(self.remaining_lives)+"\t"+"TIME: "+str(datetime.timedelta(seconds=int(time.time()-self.start_time)))+"\t"+"SCORE: "+str(self.score)
+        print_str+="LIVES: "+str(self.remaining_lives)+"\t"+"TIME: "+str(datetime.timedelta(seconds=int(time.time()-self.start_time)))+"\t"+"SCORE: "+str(self.score)+" "
         if self.ufo:
             for k in range(int(self.ufo.health/10)):
                 print_str+=Fore.GREEN+"\u2588" +Style.RESET_ALL
         if time.time()-self.level_time>=30:
-            print_str+="FALL TIME"
+            print_str+="FALL TIME "
+        tim=-1
+        for pow_up in self._powerups:
+            if isinstance(pow_up, laser):
+                tim=max(pow_up.remaining_time, tim)
+        if self._paddle.shoot:
+            print_str+=Fore.RED+"LASER ON: "+ str(tim) +Style.RESET_ALL
         for powu in self._powerups:
             if powu.remaining_time>0:
                 print_str+=powu.icon
@@ -162,6 +177,14 @@ class board():
                         print_str+="\u2588"
                     # print("\u2588", end="")
                     y+=self._paddle.length
+                    continue
+                if x==self._paddle.x-1 and y==self._paddle.y and self._paddle.shoot:
+                    print_str+="\u23B9"
+                    y+=1
+                    continue
+                if x==self._paddle.x-1 and y==self._paddle.y+self._paddle.length and self._paddle.shoot:
+                    print_str+="\u23B8"
+                    y+=1
                     continue
                 
                 if(isinstance(self._board[x][y], brick.brick)) and self._board[x][y].lvl>0:
@@ -219,11 +242,11 @@ class board():
                     flag1=0
                     for bom in self.bombs:
                         if math.floor(bom.x)==x and math.floor(bom.y)==y:
-                            print_str+="#"
+                            print_str+="💣"
                             flag1=1
                             break
                     if flag1:
-                        y+=1
+                        y+=2
                         continue
                     flag=0
                     for pow_up in self._powerups:
@@ -346,7 +369,7 @@ class board():
     
     
     def shoot_bullets(self):
-        if self.frame_no%4==0 and True:
+        if self.frame_no%4==0 and self._paddle.shoot:
             self._bullets.append(bullet(self._paddle.x, self._paddle.y))
             self._bullets.append(bullet(self._paddle.x-1, self._paddle.y+self._paddle.length-1))
     
@@ -371,5 +394,22 @@ class board():
     def increment_frame(self):
         self.frame_no+=1
     
-    def spawnblocks(self):
+    def spawnblocks1(self):
+        row=self.ufo.x+self.ufo.width+2
+        col=0
+        while col<global_stuff.cols:
+            br=brick.brick1(row, col)
+            for a in range(0,6):
+                    self._board[row][col+a]=br
+            col+=6
+        pass
+
+    def spawnblocks2(self):
+        row=self.ufo.x+self.ufo.width+4
+        col=0
+        while col<global_stuff.cols:
+            br=brick.brick2(row, col)
+            for a in range(0,6):
+                    self._board[row][col+a]=br
+            col+=6
         pass

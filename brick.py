@@ -6,6 +6,7 @@ from ballmultiplier import ballmultiplier
 from fastball import fastball
 from paddlegrab import paddlegrab
 from thruball import thruball
+from laser import laser
 import global_stuff
 import random
 
@@ -20,6 +21,8 @@ class brick(entity):
             for y in range(0,6):
                 board._board[self.x][self.y+y]=None
             self.increasescore(board)
+            if board.ufo:
+                return
             a=self.generate_powerup(self.x,self.y, ball.x_vel, ball.y_vel)
             if a:
                 board.add_powerup(a)
@@ -40,7 +43,7 @@ class brick(entity):
         # num=random.randint(0,1)
         # if num:
         #     return
-        num=random.randint(0,5)
+        num=random.randint(0,6)
         if num==0:
             return expandpaddle(x,y, x_vel, y_vel)
         elif num==1:
@@ -53,6 +56,8 @@ class brick(entity):
             return paddlegrab(x,y,x_vel,y_vel)
         elif num==5:
             return thruball(x,y,x_vel,y_vel)
+        elif num==6:
+            return laser(x,y,x_vel,y_vel)
         
             
     
@@ -160,3 +165,19 @@ class colorchangingbrick(brick):
     def destroy(self, board, ball):
         super().destroy(board, ball)
         self.hit=1
+
+class defencebrick(brick):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.lvl=2
+        self.hit=0
+    def increasescore(self, board):
+        # board.score+=20
+        board.increase_score(20)
+    
+    def reducelvl(self, board, ball):
+        self.lvl-=1
+        if self.lvl==0:
+            for y in range(0,6):
+                board._board[self.x][self.y+y]=None
+            self.increasescore(board)

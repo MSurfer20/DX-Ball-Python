@@ -1,12 +1,14 @@
 import global_stuff 
 from entity import entity
-import playsound
+from playsound import playsound
+
 class paddle(entity):
     def __init__(self, x, y):
         super().__init__(x,y)
         self.length=20
         self.actual_length=20
         self.stick=False
+        self.shoot=False
     
     def movepaddle(self, key, balls):
         if key=='d':

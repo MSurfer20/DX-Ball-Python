@@ -38,7 +38,7 @@ class Game:
             self.current_board.changehardnessbrick()
             self.current_board.createbombs()
             self.current_board.dropbombs()
-            self.current_board.spawnblocks()
+            # self.current_board.spawnblocks()
             self.current_board.increment_frame()
             self.current_board.printboard()
             

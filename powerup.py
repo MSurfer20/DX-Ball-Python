@@ -22,6 +22,8 @@ class PowerUp:
         pass
     
     def droppowerup(self):
+        if self.x==-1 and self.y==-1:
+            return
         # print(self.x)
         # print(self.y)
         self.x+=self.v_x
