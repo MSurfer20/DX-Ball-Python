@@ -141,6 +141,8 @@ class board():
         if self.ufo:
             for k in range(int(self.ufo.health/10)):
                 print_str+=Fore.GREEN+"\u2588" +Style.RESET_ALL
+        if time.time()-self.level_time>=30:
+            print_str+="FALL TIME"
         for powu in self._powerups:
             if powu.remaining_time>0:
                 print_str+=powu.icon
@@ -286,6 +288,8 @@ class board():
             ball.detectbrickcollision(self)
             ball.detectpaddlecollision(self._paddle, self)
             ball.detectufocollision(self.ufo, self)
+        for pow_up in self._powerups:
+            pow_up.detectcollision()
     
     def releaseballs(self):
         for ball in self._balls:
@@ -342,7 +346,7 @@ class board():
     
     
     def shoot_bullets(self):
-        if True:
+        if self.frame_no%4==0 and True:
             self._bullets.append(bullet(self._paddle.x, self._paddle.y))
             self._bullets.append(bullet(self._paddle.x-1, self._paddle.y+self._paddle.length-1))
     

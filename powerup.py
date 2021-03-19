@@ -1,3 +1,4 @@
+from global_stuff import *
 class PowerUp:
     def __init__(self, x, y, v_x, v_y, icon):
         self.remaining_time=-1
@@ -34,3 +35,29 @@ class PowerUp:
 
     def reducetime(self):
         self.remaining_time-=1
+    
+    def detectcollision(self):
+        if self.x==-1 and self.y==-1:
+            return
+        if((self.x)<=0):
+            self.topwallcollision()
+        if((self.y)<=0 or (self.y)>=cols-1):
+            self.sidewallcollision()
+    
+    def topwallcollision(self):
+        self.reflect_x_velocity()
+        if self.x<1:
+            self.x=0
+    
+    def sidewallcollision(self):
+        self.reflect_y_velocity()
+        if self.y<1:
+            self.y=0
+        else:
+            self.y=cols-1
+    
+    def reflect_x_velocity(self):
+        self.v_x=self.v_x*-1
+    
+    def reflect_y_velocity(self):
+        self.v_y=self.v_y*-1

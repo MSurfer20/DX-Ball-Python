@@ -25,22 +25,21 @@ class Game:
                 self.current_board.releaseballs()
             if c=='s':
                 self.current_board.game_on=0
-            if c=='c':
-                self.current_board.shoot_bullets()
             if c=='p':
                 input()
             if c is not None:
                 time.sleep(0.05)
+            self.current_board.shoot_bullets()
             self.current_board.detectbulletcollision()
             self.current_board.moveballs()
-            self.current_board.detectcollisionballs()
             self.current_board.droppows()
+            self.current_board.detectcollisionballs()
             self.current_board.reducepows()
             self.current_board.changehardnessbrick()
             self.current_board.createbombs()
             self.current_board.dropbombs()
-            self.current_board.increment_frame()
             self.current_board.spawnblocks()
+            self.current_board.increment_frame()
             self.current_board.printboard()
             
     
