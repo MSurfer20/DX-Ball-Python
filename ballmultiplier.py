@@ -10,8 +10,8 @@ class ballmultiplier(PowerUp):
         super().execute()
         new_balls=[]
         for each_ball in board._balls:
-            ball1=ball(each_ball.x, each_ball.y, each_ball.x_vel, max(each_ball.y_vel,1), False, each_ball.fire, each_ball.fast_ball)
-            ball2=ball(each_ball.x, each_ball.y, each_ball.x_vel, min(-1,-each_ball.y_vel), False, each_ball.fire, each_ball.fast_ball)
+            ball1=ball(each_ball.x, each_ball.y, each_ball.x_vel, max(each_ball.y_vel,1), False, each_ball.fire, each_ball.fast_ball, each_ball.gold_ball)
+            ball2=ball(each_ball.x, each_ball.y, each_ball.x_vel, min(-1,-each_ball.y_vel), False, each_ball.fire, each_ball.fast_ball, each_ball.gold_ball)
             new_balls=new_balls+[ball1, ball2]
         board._balls=new_balls
 

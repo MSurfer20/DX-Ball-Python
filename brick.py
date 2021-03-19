@@ -110,29 +110,29 @@ class explodingbrick(brick):
         self.lvl=20
 
     def reducelvl(self, board, ball):
-        return self.destroy(board)
+        return self.destroy(board, ball)
 
-    def destroy(self, board):
+    def destroy(self, board, ball):
         if not board._board[self.x][self.y]:
             return
         self.lvl=0
         self.increasescore(board)
         board._board[self.x][self.y]=None
         if self.y+6<global_stuff.cols and board._board[self.x+1][self.y+6]:
-            board._board[self.x+1][self.y+6].destroy(board)
+            board._board[self.x+1][self.y+6].destroy(board, ball)
         if self.y+6<global_stuff.cols and board._board[self.x][self.y+6]:
-            board._board[self.x][self.y+6].destroy(board)
+            board._board[self.x][self.y+6].destroy(board, ball)
         for k in range(-1,7):
             if board._board[self.x+1][self.y+k]:
-                board._board[self.x+1][self.y+k].destroy(board)
+                board._board[self.x+1][self.y+k].destroy(board, ball)
         if board._board[self.x-1][self.y-1]:
-            board._board[self.x-1][self.y-1].destroy(board)
+            board._board[self.x-1][self.y-1].destroy(board, ball)
         if board._board[self.x][self.y-1]:
-            board._board[self.x][self.y-1].destroy(board)
+            board._board[self.x][self.y-1].destroy(board, ball)
         for k in range(-1,7):
             if board._board[self.x-1][self.y+k]:
-                board._board[self.x-1][self.y+k].destroy(board)
-        a=self.generate_powerup(self.x,self.y)
+                board._board[self.x-1][self.y+k].destroy(board, ball)
+        a=self.generate_powerup(self.x,self.y, ball.x_vel, ball.y_vel)
         if a:
             board.add_powerup(a)
     
@@ -157,6 +157,6 @@ class colorchangingbrick(brick):
         self.hit=1
         super().reducelvl(board, ball)
     
-    def destroy(self, board):
-        super().destroy(board)
+    def destroy(self, board, ball):
+        super().destroy(board, ball)
         self.hit=1

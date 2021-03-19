@@ -11,10 +11,13 @@ import sys
 import time
 import datetime
 from bullets import bullet
+from ufo import ufo
+from ufo_ascii import ufo_ascii
+from bombs import bomb
 
 
 class board():
-    def __init__(self, rows, columns, score=0, strttime=0):
+    def __init__(self, rows, columns, score=0, strttime=0, lives_left=10):
         self._rows=rows
         self._columns=columns
         self._board = np.empty(shape=(rows+1, columns+1), dtype=np.object)
@@ -26,7 +29,7 @@ class board():
         self._balls = [ball(rows-2, posn, -1, y_vel)]
         self._powerups =[]
         self.score=score
-        self.remaining_lives=10
+        self.remaining_lives=lives_left
         if strttime==0:
             self.start_time=time.time()
         else:
@@ -34,6 +37,10 @@ class board():
         self.game_on=1
         self.level_time=time.time()
         self._bullets=[]
+        self.max_score=0
+        self.ufo=None
+        self.bombs=[]
+        self.frame_no=0
     
     def getdim(self):
         return (self._rows, self._columns)
@@ -71,6 +78,8 @@ class board():
                     y+=5
                 else:
                     y+=1
+        
+        self.max_score=1000
         # self.insertspecblocks()
     
     # def insertspecblocks(self):
@@ -100,6 +109,11 @@ class board():
             ob=self.get_brick(typ[0],typ[1],typ[2])
             for a in range(0,6):
                     self._board[typ[0]][typ[1]+a]=ob
+        self.max_score=865
+    
+    def createlevel5(self):
+        self.ufo=ufo(4, self._paddle.y)
+        
 
     def liveslost(self):
         self.remaining_lives-=1
@@ -124,6 +138,9 @@ class board():
     def printboard(self):
         print_str=""
         print_str+="LIVES: "+str(self.remaining_lives)+"\t"+"TIME: "+str(datetime.timedelta(seconds=int(time.time()-self.start_time)))+"\t"+"SCORE: "+str(self.score)
+        if self.ufo:
+            for k in range(int(self.ufo.health/10)):
+                print_str+=Fore.GREEN+"\u2588" +Style.RESET_ALL
         for powu in self._powerups:
             if powu.remaining_time>0:
                 print_str+=powu.icon
@@ -181,10 +198,26 @@ class board():
                 #     # print("\u2B24", end="")
                 #     print_str+="\u2B24"
                 else:
+                    if self.ufo is not None:
+                        if x>=self.ufo.x and x<=self.ufo.x+self.ufo.width:
+                            if y==self.ufo.y:
+                                for k in range(self.ufo.length):
+                                    print_str+="*"
+                                y+=self.ufo.length
+                                continue
                     flag1=0
                     for ball in self._balls:
                         if math.floor(ball.x)==x and math.floor(ball.y)==y:
                             print_str+=ball.icon
+                            flag1=1
+                            break
+                    if flag1:
+                        y+=1
+                        continue
+                    flag1=0
+                    for bom in self.bombs:
+                        if math.floor(bom.x)==x and math.floor(bom.y)==y:
+                            print_str+="#"
                             flag1=1
                             break
                     if flag1:
@@ -225,11 +258,15 @@ class board():
 
     def moveboardpaddle(self, key):
         self._paddle.movepaddle(key, self._balls)
+        if self.ufo:
+            self.ufo.moveufo(key, self)
     
     def droppows(self):
         for pow_up in self._powerups:
+            prev_x=pow_up.x
             pow_up.droppowerup()
-            if pow_up.x==self._paddle.x-1 and pow_up.y>=self._paddle.y and pow_up.y<=self._paddle.y+self._paddle.length:
+            curr_x=pow_up.x
+            if prev_x<self._paddle.x-1 and curr_x>=self._paddle.x-1 and pow_up.y>=self._paddle.y and pow_up.y<=self._paddle.y+self._paddle.length:
                 pow_up.execute(self)
     
     def reducepows(self):
@@ -247,7 +284,8 @@ class board():
     def detectcollisionballs(self):
         for ball in self._balls:
             ball.detectbrickcollision(self)
-            ball.detectpaddlecollision(self._paddle)
+            ball.detectpaddlecollision(self._paddle, self)
+            ball.detectufocollision(self.ufo, self)
     
     def releaseballs(self):
         for ball in self._balls:
@@ -266,15 +304,30 @@ class board():
     
     def increase_score(self, val):
         self.score+=val
-        if self.score>=865:
-            self.game_on=0
+        if self.score>=self.max_score:
+            self.game_on=2
     
     def fallbricks(self):
+        new_board=np.empty(shape=(global_stuff.rows+1, global_stuff.cols+1), dtype=np.object)
         for row in range(len(self._board)):
             for column in range(len(self._board[row])):
-                if isinstance(self._board[row][column], brick.brick):
-                    self._board[row][column].x+=1
-                    column+=4
+                if isinstance(self._board[row][column], brick.brick) and self._board[row][column].lvl>0:
+                    new_board[row+1][column]=self._board[row][column]
+        last_row=-1
+        for row in range(len(self._board)):
+            column=0
+            while column<(len(self._board[row])):
+                if isinstance(new_board[row][column], brick.brick):
+                    new_board[row][column].x+=1
+                    last_row=row
+                    column+=6
+                else:
+                    column+=1
+        pass
+        self._board=new_board
+        if last_row==self._paddle.x:
+            self.game_on=-1
+        pass
     
     def changehardnessbrick(self):
         for x in range(len(self._board)):
@@ -296,3 +349,23 @@ class board():
     def detectbulletcollision(self):
         for bullet in self._bullets:
             bullet.checkcollision(self)
+    
+    def createbombs(self):
+        if self.ufo is None:
+            return
+        if (self.frame_no)%10==0:
+            self.bombs.append(bomb(self.ufo.x, self.ufo.y))
+    
+    def dropbombs(self):
+        for bom in self.bombs:
+            bom.dropbomb()
+            if bom.x==self._paddle.x and (bom.y>=self._paddle.y and bom.y<=self._paddle.y+self._paddle.length):
+                self.remaining_lives-=1
+            if bom.x>self._paddle.x:
+                self.bombs.remove(bom)
+        
+    def increment_frame(self):
+        self.frame_no+=1
+    
+    def spawnblocks(self):
+        pass

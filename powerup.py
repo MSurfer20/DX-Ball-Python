@@ -26,6 +26,8 @@ class PowerUp:
         self.x+=self.v_x
         self.y+=self.v_y
         self.v_x+=self.accel
+        if self.v_x>2:
+            self.v_x=2
         # print(self.x)
         # print(self.y)
         # input()

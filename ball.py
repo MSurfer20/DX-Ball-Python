@@ -1,18 +1,22 @@
 import math
 from global_stuff import *
+import global_stuff
 import brick
 from colorama import Fore, Style
 from entity import entity
 
 class ball(entity):
-    def __init__(self, x, y, x_vel=-1, y_vel=1, stuck=True, fire=False, fast_ball=1):
+    def __init__(self, x, y, x_vel=-1, y_vel=1, stuck=True, fire=False, fast_ball=1, gold=True):
         super().__init__(x,y)
         self.x_vel=x_vel
         self.y_vel=y_vel
         self.stuck=stuck
         self.fire=fire
+        self.gold_ball=gold
         if fire:
             self.icon=Fore.RED+"\u2B24"+Style.RESET_ALL
+        elif gold:
+            self.icon=Fore.YELLOW+"\u2B24"+Style.RESET_ALL
         else:
             self.icon="\u2B24"
         self.fast_ball=fast_ball
@@ -63,24 +67,73 @@ class ball(entity):
         curr_x=math.floor(self.x)
         curr_y=math.floor(self.y)
         if board.check_bricks(int(curr_x), int(curr_y+y_dir)):
-            if self.fire:
+            brick_x=int(curr_x)
+            brick_y=int(curr_y+y_dir)
+            if self.gold_ball:
+                board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board, self)
+                if brick_y+6<global_stuff.cols and board._board[brick_x+1][brick_y+6]:
+                    board._board[brick_x+1][brick_y+6].destroy(board, self)
+                if brick_y+6<global_stuff.cols and board._board[brick_x][brick_y+6]:
+                    board._board[brick_x][brick_y+6].destroy(board, self)
+                for k in range(-1,7):
+                    if board._board[brick_x+1][brick_y+k]:
+                        board._board[brick_x+1][brick_y+k].destroy(board, self)
+                if board._board[brick_x-1][brick_y-1]:
+                    board._board[brick_x-1][brick_y-1].destroy(board, self)
+                if board._board[brick_x][brick_y-1]:
+                    board._board[brick_x][brick_y-1].destroy(board, self)
+                for k in range(-1,7):
+                    if board._board[brick_x-1][brick_y+k]:
+                        board._board[brick_x-1][brick_y+k].destroy(board, self)
+                if not self.fire:
+                    self.reflect_y_velocity()
+                
+                # a=self.generate_powerup(brick_x,brick_y, ball.x_vel, ball.y_vel)
+                # if a:
+                #     board.add_powerup(a)
+            
+            elif self.fire:
                 board._board[int(curr_x)][int(curr_y+y_dir)].destroy(board, self)
             else:
                 # if time.time()-board.level_time>10:
-                # if True:
-                #     board.fallbricks()
                 board._board[int(curr_x)][int(curr_y+y_dir)].reducelvl(board, self)
                 self.reflect_y_velocity()
+           
+                
         if board.check_bricks(int(curr_x+x_dir), int(curr_y)) and not board.check_bricks(int(curr_x), int(curr_y)):
-            if self.fire:
+            brick_x=int(curr_x+x_dir)
+            brick_y=int(curr_y)
+            if self.gold_ball:
+                board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board, self)
+                if brick_y+6<global_stuff.cols and board._board[brick_x+1][brick_y+6]:
+                    board._board[brick_x+1][brick_y+6].destroy(board, self)
+                if brick_y+6<global_stuff.cols and board._board[brick_x][brick_y+6]:
+                    board._board[brick_x][brick_y+6].destroy(board, self)
+                for k in range(-1,7):
+                    if board._board[brick_x+1][brick_y+k]:
+                        board._board[brick_x+1][brick_y+k].destroy(board, self)
+                if board._board[brick_x-1][brick_y-1]:
+                    board._board[brick_x-1][brick_y-1].destroy(board, self)
+                if board._board[brick_x][brick_y-1]:
+                    board._board[brick_x][brick_y-1].destroy(board, self)
+                for k in range(-1,7):
+                    if board._board[brick_x-1][brick_y+k]:
+                        board._board[brick_x-1][brick_y+k].destroy(board, self)
+                # if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
+                if not self.fire:
+                    self.reflect_x_velocity()
+                
+                # a=board._board[int(curr_x+x_dir)][int(curr_y)].generate_powerup(brick_x,brick_y, ball.x_vel, ball.y_vel)
+                # if a:
+                    # board.add_powerup(a)
+            elif self.fire:
                 board._board[int(curr_x+x_dir)][int(curr_y)].destroy(board, self)
             else:
                 if board._board[int(curr_x+x_dir)][int(curr_y)] != board._board[int(curr_x)][int(curr_y+y_dir)]:
                     # if time.time()-board.level_time>10:
-                    # if True:
-                    #     board.fallbricks()
                     board._board[int(curr_x+x_dir)][int(curr_y)].reducelvl(board, self)
                     self.reflect_x_velocity()
+            
     
     def reflect_x_velocity(self):
         self.x_vel=self.x_vel*-1
@@ -89,13 +142,15 @@ class ball(entity):
         self.y_vel=self.y_vel*-1
             
         
-    def detectpaddlecollision(self, paddle):
+    def detectpaddlecollision(self, paddle, board):
         x_dir=int(math.copysign(1,self.x_vel))
         y_dir=int(math.copysign(1,self.y_vel))
         curr_x=math.floor(self.x)
         curr_y=math.floor(self.y)
         if x_dir==1 and curr_y>=paddle.get_left_coor() and curr_y<=paddle.get_right_coor() and curr_x==rows-2:
             self.reflect_x_velocity()
+            if True:
+                board.fallbricks()
             dist_from_centre=paddle.get_left_coor()+(paddle.get_length())/2-curr_y
             factor_change=math.floor(dist_from_centre/2.5)
             self.y_vel=-factor_change*0.5
@@ -115,7 +170,21 @@ class ball(entity):
     
     def stopfire(self):
         self.fire=False
-        self.icon="\u2B24"
+        if self.gold_ball:
+            self.icon=Fore.YELLOW+"\u2B24"+Style.RESET_ALL
+        else:
+            self.icon="\u2B24"
+    
+    def setgold(self):
+        self.gold_ball=True
+        self.icon=Fore.YELLOW+"\u2B24"+Style.RESET_ALL
+    
+    def stopgold(self):
+        self.fire=False
+        if self.fire:
+            self.icon="\u2B24"
+        else:
+            self.icon="\u2B24"
 
     def isstuck(self):
         return self.stuck
@@ -125,3 +194,25 @@ class ball(entity):
     
     def decrease_ball_velocity(self):
         self.fast_ball=1
+
+    def detectufocollision(self, ufo, board):
+        if not ufo:
+            return
+        x_dir=int(math.copysign(1,self.x_vel))
+        y_dir=int(math.copysign(1,self.y_vel))
+        curr_x=math.floor(self.x)
+        curr_y=math.floor(self.y)
+        flag=0
+        if ufo.check(int(curr_x), int(curr_y+y_dir)):
+                # if time.time()-board.level_time>10:
+            ufo.reducelvl()
+            flag=1
+            self.reflect_y_velocity()
+        if ufo.check(int(curr_x+x_dir), int(curr_y)):
+                # if time.time()-board.level_time>10:
+            if flag==0:
+                ufo.reducelvl()
+            self.reflect_x_velocity()
+        if ufo.health==50:
+            # board.spawnblocks1()
+            pass
