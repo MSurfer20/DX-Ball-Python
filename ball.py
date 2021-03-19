@@ -243,4 +243,6 @@ class ball(entity):
                     pass
                 if ufo.health==40:
                     board.spawnblocks2()
+                if ufo.health==0:
+                    board.game_on=2
             self.reflect_x_velocity()
